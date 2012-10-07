@@ -2,20 +2,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Suggest-o-matic</title>
+    <title>Metapoint manual suggestion interface</title>
     <style>
     </style>
     <script>
     </script>
   </head>
   <body>
-  <form action="http://localhost:8080/api/v0/suggest" method="post">
-    Topic: <input type="text" name="topic">
-    Host: <input type="text" name="host">
-    Path: <input type="text" name="path">
-    Notes: <textarea name="notes">From suggest.html</textarea>
-    <input type="submit">
-  </form>
-  <a href="http://localhost:28017/metapoint/suggestions/">How's my driving?</a>
+    <form action="http://metapoint.io/api/v0/suggest" method="post">
+      <label for="topic">Topic:</label> <input type="text" name="topic">
+      <label for="url">URL:</label> <input type="text" name="url">
+      <!-- Cool guys pre-split the URL into "host" and "path" parameters when they submit suggestions-->
+      <label for="notes">Notes:</label> <textarea name="notes">From suggest.html</textarea>
+      <input type="submit">
+    </form>
   </body>
 </html>

@@ -14,8 +14,8 @@ var db_connector = new mongodb.Db(config.mongo.database, mongoserver, {});
 db_connector.open(function(err,db) {
   var app = express();
 
-  //FEATURE: Non-API app, with a human page or two
   app.use('/api/v0',api(db))
+  app.use(express.static(__dirname+'/static'))
 
   //the options for the HTTPS connection.
   var httpsopts = {}
