@@ -7,7 +7,7 @@ var config = require('./config.json');
 
 var mongoserver = new mongodb.Server(config.mongo.server,
   config.mongo.port, {auto_reconnect: true});
-var db_connector = new mongodb.Db('metapoint', mongoserver, {});
+var db_connector = new mongodb.Db(config.mongo.database, mongoserver, {});
 
 function db_connect_cb(err,db) {
   var topix = db.collection('topics')

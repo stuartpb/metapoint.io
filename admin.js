@@ -8,6 +8,10 @@
 //but obviously, SOME FORM OF AUTHENTICATION SHOULD BE ADDED
 //BEFORE GOING LIVE WITH THIS.
 
+//REM: The moving-suggestions-to-production-type code should probably
+//be kept somewhere like /lib/admin.js, so it can be used by
+//stuff like automated server-side scripts.
+
 var express = require('express');
 var mongo = require('mongodb');
 var https = require('https');
@@ -19,7 +23,7 @@ var nop = function(){}
 
 var mongoserver = new mongodb.Server(config.mongo.server,
   config.mongo.port, {auto_reconnect: true});
-var db_connector = new mongodb.Db('wikilinker', mongoserver, {});
+var db_connector = new mongodb.Db(config.mongo.database, mongoserver, {});
 var db = db_connector.open(nop)
 var topix = db.collection('topics')
 var suggs = db.collection('suggestions')

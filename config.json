@@ -1,5 +1,6 @@
 {
   "mongo": {
+    "database": "metapoint",
     "server": "localhost",
     "port": 27017
   }
