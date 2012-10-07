@@ -26,11 +26,13 @@ function db_connect_cb(err,db) {
     })
   }
 
+  api.use(express.bodyParser())
+
   //FEATURE: return 405 codes for incorrect verbs
     //on valid API paths
 
-  api.get('/topics/:topic',function(req,res){
-    var cursor = topix.find({topic: req.params.topic})
+  api.get('/pagelist',function(req,res){
+    var cursor = topix.find({topic: req.param('topic')})
     cursor.count(function(count,doc){
       if(count==0){
         //FEATURE: case-insensitivity
@@ -78,11 +80,12 @@ function db_connect_cb(err,db) {
     })
   })
 
-  api.post('/topics/:topic/suggest',function(req,res){
-    var host = req.query.host
-    var path = req.query.path
+  api.post('/suggest',function(req,res){
+    var host = req.param('host')
+    var path = req.param('path')
+    //console.log(req)
     if(!(host && path)){
-      if(req.query.url) {
+      if(req.param('url')) {
         //kudos to Douglas Crockford (I'd cut this up into concatenated strings
         //for cleanliness and compile it globally but nah)
         //Note that this has been tweaked so capture group 5 contains
@@ -90,7 +93,7 @@ function db_connect_cb(err,db) {
         //NOTE: this won't match URLs with IPv6 hosts, but if someone is sending one of those
         //they have a whoooole other class of problem.
         var parse_url = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(\/.*)?$/;
-        var result = parse_url.exec(req.query.url)
+        var result = parse_url.exec(req.param('url'))
 
         //CONSIDER: What to do with the scheme and slashes? It's not out of the
           //question that http vs. https could matter for the host.
@@ -100,12 +103,12 @@ function db_connect_cb(err,db) {
           host = result[3]
           path = result[5]
         } else {
-          errespond(400,"URL malformed")
+          errespond(res,400,"URL malformed")
         }
       } else {
         //Respond with an error saying that a URL must be included
         //if site and path are not
-        errespond(400,"No URL or site/path pair")
+        errespond(res,400,"No URL or site/path pair")
       }
     }
     //FEATURE: Strip/use URL prefixes from hosts?
@@ -116,10 +119,10 @@ function db_connect_cb(err,db) {
 
     //Create a new suggestion object
     var suggestion = {
-      topic: req.params.topic,
+      topic: req.param('topic'),
       host: host,
       path: path,
-      notes: req.query.notes || req.body.notes
+      notes: req.param('notes')
     //FEATURE: log identity in some way (key, session, IP address)
       //Currently this is kind of what the "notes" thing is for
     }
@@ -127,7 +130,10 @@ function db_connect_cb(err,db) {
     //Add suggestion object to suggestions database
     suggs.insert(suggestion)
 
-  }) // /topics/:topic/suggest
+    //Return a success code
+    res.send(200)
+
+  }) // /suggest
 
   //FEATURE: Non-API app, with a human page or two
 
