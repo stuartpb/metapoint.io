@@ -1,9 +1,9 @@
 var express = require('express');
+var url = require('url');
 
 //Take a response object and respond with the
 //given HTTP code and error message.
 function errespond(res, code, message) {
-  //I flip-flop between res.send versus res.json.
   res.send(code,{
     message: message
     //the HTTP code should indicate it's an error-
@@ -15,6 +15,10 @@ function pagelist(db){
   var topix = db.collection('topics')
 
   return function(req,res){
+    //allow pages on any domain to read this data,
+    //even if it's an error or something
+    res.setHeader("Access-Control-Allow-Origin",'*')
+
     var cursor = topix.find({topic: req.param('topic')})
     cursor.count(function(count,doc){
       if(count==0){
@@ -51,9 +55,6 @@ function pagelist(db){
 
         //return first document from cursor
         cursor.nextObject(function (err,doc){
-          //allow pages on any domain to read this data
-          res.setHeader("Access-Control-Allow-Origin",'*')
-
           //FEATURE: allow requests for a subset of the data
           //(ie. just the en.wikipedia.org page) via query string
           res.send(doc);
@@ -67,29 +68,21 @@ function suggest(db){
   //The collection to add to.
   var suggs = db.collection('suggestions')
 
-  //kudos to Douglas Crockford (I'd cut this up into concatenated strings
-  //for cleanliness and compile it globally but nah)
-  //Note that this has been tweaked so capture group 5 contains
-  //the slash, query, and hash parts (and symbols) of the path
-  //NOTE: this won't match URLs with IPv6 hosts, but if someone is sending one of those
-  //they have a whoooole other class of problem.
-  var parse_url = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(\/.*)?$/;
-
   return function(req,res){
     var host = req.param('host')
     var path = req.param('path')
     //console.log(req)
     if(!(host && path)){
       if(req.param('url')) {
-        var result = parse_url.exec(req.param('url'))
+        var urlObj = url.parse(req.param('url'))
 
         //CONSIDER: What to do with the scheme and slashes? It's not out of the
           //question that http vs. https could matter for the host.
 
         //this is kind of redundant but not quite?
-        if(result && result[3] && result[5]) {
-          host = result[3]
-          path = result[5]
+        if(urlObj.host && urlObj.path) {
+          host = urlObj.host
+          path = urlObj.path
         } else {
           errespond(res,400,"URL malformed")
         }
