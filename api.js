@@ -101,6 +101,7 @@ function suggest(db){
     //Create a new suggestion object
     var suggestion = {
       topic: req.param('topic'),
+      scope: req.param('scope'),
       host: host,
       path: path,
       notes: req.param('notes')
