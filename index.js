@@ -17,9 +17,10 @@ db_connector.open(function(err,db) {
   app.use('/api/v0',api(db))
   app.use(express.static(__dirname+'/static'))
 
-  //the options for the HTTPS connection.
-  var httpsopts = {}
-
-  http.createServer(app).listen(8080);
-  //https.createServer(httpsopts, app).listen(443);
+  if(config.http) {
+    http.createServer(app).listen(config.http.port);
+  }
+  if(config.https) {
+    https.createServer(config.https.options, app).listen(config.https.port);
+  }
 }); //db.connector.open({

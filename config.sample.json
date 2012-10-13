@@ -3,5 +3,12 @@
     "database": "metapoint",
     "server": "localhost",
     "port": 27017
-  }
+  },
+  "http": {
+    "port": 80
+  },
+  "https": {
+    "options": {}
+    "port": 443
+  },
 }
