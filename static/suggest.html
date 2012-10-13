@@ -10,11 +10,17 @@
   </head>
   <body>
     <form action="http://metapoint.io/api/v0/suggest" method="post">
-      <label for="topic">Topic:</label> <input type="text" name="topic">
-      <label for="url">URL:</label> <input type="text" name="url">
-      <!-- Cool guys pre-split the URL into "host" and "path" parameters when they submit suggestions-->
-      <label for="notes">Notes:</label> <textarea name="notes">From suggest.html</textarea>
-      <input type="submit">
+      <p><label for="topic">Topic:</label> <input type="text" name="topic">
+      <br><i>(eg. "Charade")</i></p>
+      <p><label for="scope">Scope:</label> <input type="text" name="scope">
+      <br><i>(eg. "1963 film")</i></p>
+      <p><label for="url">URL:</label> <input type="text" name="url">
+      <br><i>(eg. "<a href="http://en.wikipedia.org/wiki/Charade_(1963_film)">http://en.wikipedia.org/wiki/Charade_(1963_film)</a>"
+      <br>or "<a href="http://www.imdb.com/title/tt0056923/">http://www.imdb.com/title/tt0056923/</a>")</i>
+      <!-- Cool guys pre-split the URL into "host" and "path" parameters when they submit suggestions -->
+      </p>
+      <p><label for="notes">Notes:</label><br><textarea name="notes">From suggest.html</textarea></p>
+      <p><input type="submit"></p>
     </form>
   </body>
 </html>
