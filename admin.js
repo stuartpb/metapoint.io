@@ -14,7 +14,6 @@ var https = require('https');
 var http = require('http');
 
 var config = require('./config.json');
-var adminlib = require('.lib/admin.js');
 
 var mongoserver = new mongodb.Server(config.mongo.server,
   config.mongo.port, {auto_reconnect: true});
