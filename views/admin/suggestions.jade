@@ -1,0 +1,37 @@
+!!!
+html
+  head
+    meta(charset="utf-8")
+    title NO WAY!!! NO WAY!!!
+    style
+      body {
+        font-family: sans-serif;
+      }
+    script
+  body
+    h1 Suggestions
+    for suggestion, i in suggestions
+      form(id="suggestion-"+i).suggestion
+        .idline
+          label Topic
+            input(name="topic")= suggestion.topic
+          label Scope
+            input(name="scope")= suggestion.scope
+          label Batch OK
+            input(name="batchok", type="checkbox", checked)
+        .tline
+          label Host
+            input(name="host")= suggestion.host
+          label Path
+            input(name="path")= suggestion.path
+          //This should actually probably be a JS call so it visits
+          //whatever host+path is currently written :/
+          a(href='http://'+suggestion.host+suggestion.path) Visit
+        .notes
+          label Notes
+            input(name="notes",type="multiline")= suggestion.notes
+        .actions
+          button: Approve
+          button: Remove
+          button: Deal With Later
+    button#batchy(onclick="approveAll()"): Approve All Checked Suggestions
