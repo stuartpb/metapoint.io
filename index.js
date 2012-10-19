@@ -15,6 +15,10 @@ db_connector.open(function(err,db) {
   var app = express();
 
   app.use('/api/v0',api(db))
+  if(config.admin) {
+    app.use(config.admin,require('./admin.js')(db))
+  }
+
   app.use(express.static(__dirname+'/static'))
 
   if(config.http) {

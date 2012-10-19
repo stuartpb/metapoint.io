@@ -4,6 +4,7 @@
     "server": "localhost",
     "port": 27017
   },
+  "admin": "/secret/path/for/admin/app",
   "http": {
     "port": 80
   },
