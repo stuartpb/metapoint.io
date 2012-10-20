@@ -14,24 +14,24 @@ html
       form(id="suggestion-"+i).suggestion
         .idline
           label Topic
-            input(name="topic")= suggestion.topic
+            input(name="topic", value=suggestion.topic)
           label Scope
-            input(name="scope")= suggestion.scope
+            input(name="scope", value=suggestion.scope)
           label Batch OK
             input(name="batchok", type="checkbox", checked)
         .tline
           label Host
-            input(name="host")= suggestion.host
+            input(name="host", value=suggestion.host)
           label Path
-            input(name="path")= suggestion.path
-          //This should actually probably be a JS call so it visits
-          //whatever host+path is currently written :/
+            input(name="path", value=suggestion.path)
+          // This should actually probably be a JS call so it visits
+             whatever host+path is currently written :/
           a(href='http://'+suggestion.host+suggestion.path) Visit
         .notes
           label Notes
-            input(name="notes",type="multiline")= suggestion.notes
+            textarea(name="notes")= suggestion.notes
         .actions
-          button: Approve
-          button: Remove
-          button: Deal With Later
-    button#batchy(onclick="approveAll()"): Approve All Checked Suggestions
+          button Approve
+          button Remove
+          button Deal With Later
+    button#batchy(onclick="approveAll()") Approve All Checked Suggestions
