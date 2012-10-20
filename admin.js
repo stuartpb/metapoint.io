@@ -50,6 +50,8 @@ function apidrop(db){
 module.exports = function(db){
   var admin = express();
 
+  admin.set('views', __dirname + '/views');
+
   admin.use(express.bodyParser())
 
   //FEATURE: return 405 codes for incorrect verbs
