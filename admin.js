@@ -12,7 +12,7 @@ function suggestions(db){
 
   return function(req,res){
     var top20 = suggs.find().limit(20)
-    res.render('admin/suggestions',{suggestions: top20})
+    res.render('suggestions',{suggestions: top20})
   }
 }
 
@@ -50,7 +50,8 @@ function apidrop(db){
 module.exports = function(db){
   var admin = express();
 
-  admin.set('views', __dirname + '/views');
+  admin.set('views', __dirname + '/views/admin');
+  admin.set('view engine', 'jade');
 
   admin.use(express.bodyParser())
 
