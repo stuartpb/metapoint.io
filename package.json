@@ -13,7 +13,8 @@
   "author": "Stuart P. Bentley",
   "license": "MIT",
   "dependencies": {
-    "express": "~3.0.0rc4",
-    "mongodb": "~1.1.6"
+    "express": "~3.0.0rc5",
+    "mongodb": "~1.1.6",
+    "jade": "~0.27.6"
   }
 }
