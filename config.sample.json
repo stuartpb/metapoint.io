@@ -9,7 +9,7 @@
     "port": 80
   },
   "https": {
-    "options": {}
+    "options": {},
     "port": 443
-  },
+  }
 }
