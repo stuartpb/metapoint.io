@@ -11,8 +11,9 @@ function suggestions(db){
   var suggs = db.collection('suggestions')
 
   return function(req,res){
-    var top20 = suggs.find().limit(20).toArray()
-    res.render('suggestions',{suggestions: top20})
+    suggs.find().limit(20).toArray(function(err,top20){
+      res.render('suggestions',{suggestions: top20})
+    })
   }
 }
 
