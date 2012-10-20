@@ -6,11 +6,6 @@
 
 var express = require('express');
 
-var mongoserver = new mongodb.Server(config.mongo.server,
-  config.mongo.port, {auto_reconnect: true});
-var db_connector = new mongodb.Db(config.mongo.database, mongoserver, {});
-var db = db_connector.open()
-
 function suggestions(db){
   var topix = db.collection('topics')
   var suggs = db.collection('suggestions')
