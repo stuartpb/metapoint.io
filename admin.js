@@ -34,7 +34,7 @@ function apimerge(db){
   //All actions taken in the admin cp should be logged.
   var log = db.collection('oplog')
 
-  function(req,res){
+  return function(req,res){
     res.send(501,'Not Implemented')
   }
 }
