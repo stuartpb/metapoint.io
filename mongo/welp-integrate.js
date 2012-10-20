@@ -1,3 +1,5 @@
+db = db.getSiblingDB("metapoint")
+
 db.suggestions.find({
   host: 'en.wikipedia.org', scope: {$exists:false}
 }).forEach(function(this) {
