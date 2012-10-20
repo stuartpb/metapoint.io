@@ -1,17 +1,17 @@
 db = db.getSiblingDB("metapoint")
 
 db.suggestions.find({
-  host: 'en.wikipedia.org', scope: {$exists:false}
-}).forEach(function(this) {
+  host: 'en.wikipedia.org', scope: null
+}).forEach(function(doc) {
   db.topics.update({
-    topic: this.topic,
-    scope: {$exists:false}
+    topic: doc.topic,
+    scope: null
   },{ $set:{
-    'sites.en_wikipedia_org': this.path
+    'sites.en_wikipedia_org': doc.path
   }},true)
   db.oplog.insert({
     action: 'transfer',
-    suggestion: this
+    suggestion: doc
   })
-  db.suggestions.remove({_id: this._id})
+  db.suggestions.remove({_id: doc._id})
 })
