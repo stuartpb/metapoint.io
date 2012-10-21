@@ -9,6 +9,9 @@
     "port": 80
   },
   "https": {
+    "files": {
+      "pfx": "keys/server.pfx"
+    },
     "options": {},
     "port": 443
   }

@@ -15,16 +15,26 @@ db_connector.open(function(err,db) {
   var app = express();
 
   app.use('/api/v0',api(db))
-  if(config.admin) {
+  if (config.admin) {
     app.use(config.admin,require('./admin.js')(db))
   }
 
   app.use(express.static(__dirname+'/static'))
 
-  if(config.http) {
+  if (config.http) {
     http.createServer(app).listen(config.http.port);
   }
-  if(config.https) {
-    https.createServer(config.https.options, app).listen(config.https.port);
+  if (config.https) {
+    var httpsoptions = config.https.options || {}
+    //The list of configurable filenames.
+    var httpsfiles = ['pfx','key','cert','ca']
+    //Read in any specified files
+    for (var i = 0; i < httpsfiles.length; i++) {
+      if (config.https.files[httpsfiles[i]]) {
+        httpsoptions[httpsfiles[i]] = fs.readFileSync(
+          config.https.files[httpsfiles[i]])
+      }
+    }
+    https.createServer(httpsoptions, app).listen(config.https.port);
   }
 }); //db.connector.open({
