@@ -3,6 +3,9 @@ var mongodb = require('mongodb');
 var https = require('https');
 var http = require('http');
 
+//for reading in files for HTTPS setup
+var fs = require('fs')
+
 var config = require('./config.json');
 
 var api = require('./api.js')
