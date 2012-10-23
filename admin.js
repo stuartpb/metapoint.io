@@ -53,6 +53,7 @@ module.exports = function(db){
 
   admin.set('views', __dirname + '/views/admin');
   admin.set('view engine', 'jade');
+  admin.locals.pretty = true;
 
   admin.use(express.bodyParser())
 

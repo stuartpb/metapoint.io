@@ -7,6 +7,18 @@ html
       body {
         font-family: sans-serif;
       }
+      form {
+        margin: 4px auto;
+        padding: 4px;
+        width: 800px;
+        border: 4px solid black;
+      }
+      input[type="text"] {
+        width: 300px;
+      }
+      textarea {
+        width: 90%;
+      }
     script
   body
     h1 Suggestions
@@ -14,21 +26,22 @@ html
       form(id="suggestion-"+i).suggestion
         .idline
           label Topic
-            input(name="topic", value=suggestion.topic)
+            input(type="text", name="topic", value=suggestion.topic)
           label Scope
-            input(name="scope", value=suggestion.scope)
+            input(type="text", name="scope", value=suggestion.scope)
           label Batch OK
-            input(name="batchok", type="checkbox", checked)
+            input(type="checkbox", name="batchok", checked)
         .tline
           label Host
-            input(name="host", value=suggestion.host)
+            input(type="text", name="host", value=suggestion.host)
           label Path
-            input(name="path", value=suggestion.path)
+            input(type="text", name="path", value=suggestion.path)
           // This should actually probably be a JS call so it visits
-             whatever host+path is currently written :/
+           | whatever host+path is currently written :/
           a(href='http://'+suggestion.host+suggestion.path) Visit
         .notes
           label Notes
+            br
             textarea(name="notes")= suggestion.notes
         .actions
           button Approve
