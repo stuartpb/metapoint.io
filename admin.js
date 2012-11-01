@@ -6,13 +6,25 @@
 
 var express = require('express');
 
-function suggestions(db){
-  var topix = db.collection('topics')
+function suggestions(db,adminpath){
+  //The topics collection might be useful at some point in the future
+  //(list any conflict with existing topic), but not now.
+
   var suggs = db.collection('suggestions')
 
   return function(req,res){
     suggs.find().limit(20).toArray(function(err,top20){
-      res.render('suggestions',{suggestions: top20})
+      res.render('suggestions',{suggestions: top20, adminpath:adminpath})
+    })
+  }
+}
+
+function report(db, query, name){
+  var suggs = db.collection('suggestions')
+
+  return function(req,res){
+    suggs.find(query).toArray(function(err,arr){
+      res.render('reports',{reportItems: arr, reportName: name})
     })
   }
 }
@@ -28,18 +40,64 @@ function suggestions(db){
 //and why require two API calls?
 function apimerge(db){
   //All actions taken in the admin cp should be logged.
-  var log = db.collection('oplog')
+  var oplog = db.collection('oplog')
+  var topix = db.collection('topics')
+  var suggs = db.collection('suggestions')
 
   return function(req,res){
-    res.send(501,'Not Implemented')
+    var reqtopic = req.param('topic')
+    var reqscope = req.param('scope')
+    var reqhost = req.param('host')
+    var usite = reqhost.replace(/\./g,'_')
+    var reqpath = req.param('path')
+    var reqnotes = req.param('notes')
+    var reqsid = req.param('sid')
+
+
+    topix.update({
+      topic: reqtopic,
+      scope: reqscope
+    },{ $set:{
+      'sites.'+usite: reqpath
+    }},true)
+    if(reqsid){
+      oplog.insert({
+        action: 'upsert',
+        suggestion: {
+          topic: reqtopic,
+          scope: reqscope,
+          host: reqhost,
+          path: reqpath,
+          notes: reqnotes,
+          _id: reqsid
+        }
+      })
+      suggs.remove({_id: reqsid})
+    } else {
+      oplog.insert({
+        action: 'write',
+        suggestion: {
+          topic: reqtopic,
+          scope: reqscope,
+          host: reqhost,
+          path: reqpath,
+          notes: reqnotes,
+        }
+      })
+    }
+    res.send(200,'OK')
   }
 }
 
 //POST /api/drop
 //Just the "delete suggestion" part of the above API call.
 function apidrop(db){
+  var suggs = db.collection('suggestions')
+
   return function(req,res){
-    res.send(501,'Not Implemented')
+    var reqsid = req.param('sid')
+    suggs.remove({_id: reqsid})
+    res.send(200,'OK')
   }
 }
 
@@ -48,7 +106,7 @@ function apidrop(db){
 
 
 //App constructor
-module.exports = function(db){
+module.exports = function(db,path){
   var admin = express();
 
   admin.set('views', __dirname + '/views/admin');
@@ -60,7 +118,8 @@ module.exports = function(db){
   //FEATURE: return 405 codes for incorrect verbs
     //on valid API paths
 
-  admin.get('/suggestions',suggestions(db))
+  admin.get('/suggestions',suggestions(db,path))
+  admin.get('/reports/films',report(db,{scope: /film$/},"Films"))
   admin.post('/api/merge',apimerge(db))
   admin.post('/api/drop',apidrop(db))
 

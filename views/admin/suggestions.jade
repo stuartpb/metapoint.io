@@ -20,10 +20,22 @@ html
         width: 90%;
       }
     script
+      function approve(button) {
+
+      }
+
+      function remove(button) {
+
+      }
+
+      function approveAll() {
+
+      }
   body
     h1 Suggestions
     for suggestion, i in suggestions
       form(id="suggestion-"+i).suggestion
+        input(type="hidden",name="sid",value=suggestion._id)
         .idline
           label Topic
             input(type="text", name="topic", value=suggestion.topic)
@@ -44,7 +56,7 @@ html
             br
             textarea(name="notes")= suggestion.notes
         .actions
-          button Approve
-          button Remove
+          button(onclick="approve(self)") Approve
+          button(onclick="remove(self)") Remove
           button Deal With Later
     button#batchy(onclick="approveAll()") Approve All Checked Suggestions

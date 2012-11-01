@@ -19,7 +19,7 @@ db_connector.open(function(err,db) {
 
   app.use('/api/v0',api(db))
   if (config.admin) {
-    app.use(config.admin,require('./admin.js')(db))
+    app.use(config.admin,require('./admin.js')(db,config.admin))
   }
 
   app.use(express.static(__dirname+'/static'))

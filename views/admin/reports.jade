@@ -1,0 +1,19 @@
+!!!
+html
+  head
+    meta(charset="utf-8")
+    title Report: ${reportName}
+    style
+      body {
+        font-family: sans-serif;
+      }
+      .name {
+        color: #800;
+      }
+      .scope {
+        color: #00c;
+      }
+  body
+    ul
+    for item in reportItems
+      li <span class="name">${item.name}</span> (<span class="scope">${item.scope}</span>)
