@@ -48,18 +48,17 @@ function apimerge(db){
     var reqtopic = req.param('topic')
     var reqscope = req.param('scope')
     var reqhost = req.param('host')
-    var usite = reqhost.replace(/\./g,'_')
     var reqpath = req.param('path')
     var reqnotes = req.param('notes')
     var reqsid = req.param('sid')
 
+    var updata = {}
+    updata['sites.'+reqhost.replace(/\./g,'_')] = reqpath
 
     topix.update({
       topic: reqtopic,
       scope: reqscope
-    },{ $set:{
-      'sites.'+usite: reqpath
-    }},true)
+    },{$set: updata}, true)
     if(reqsid){
       oplog.insert({
         action: 'upsert',
