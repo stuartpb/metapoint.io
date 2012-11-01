@@ -2,7 +2,7 @@
 html
   head
     meta(charset="utf-8")
-    title Report: ${reportName}
+    title Report: #{reportName}
     style
       body {
         font-family: sans-serif;
@@ -16,4 +16,4 @@ html
   body
     ul
     for item in reportItems
-      li <span class="name">${item.name}</span> (<span class="scope">${item.scope}</span>)
+      li <span class="name">#{item.name}</span> (<span class="scope">#{item.scope}</span>)
