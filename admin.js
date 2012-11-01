@@ -118,7 +118,7 @@ module.exports = function(db,path){
     //on valid API paths
 
   admin.get('/suggestions',suggestions(db,path))
-  admin.get('/reports/films',report(db,{scope: /film$/},"Films"))
+  admin.get('/reports/films',report(db,{scope: /film$/,host:'en.wikipedia.org'},"Films"))
   admin.post('/api/merge',apimerge(db))
   admin.post('/api/drop',apidrop(db))
 
