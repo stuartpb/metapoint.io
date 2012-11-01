@@ -119,6 +119,8 @@ module.exports = function(db,path){
 
   admin.get('/suggestions',suggestions(db,path))
   admin.get('/reports/films',report(db,{scope: /film$/,host:'en.wikipedia.org'},"Films"))
+  admin.get('/reports/lists',report(db,{topic: /^List of/,host:'en.wikipedia.org'},"Lists"))
+  admin.get('/reports/lists2',report(db,{topic: /^List of/,host:'www.imdb.com'},"Lists (that I already approved like an idiot)"))
   admin.post('/api/merge',apimerge(db))
   admin.post('/api/drop',apidrop(db))
 
