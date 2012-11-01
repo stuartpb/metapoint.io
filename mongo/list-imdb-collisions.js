@@ -1,18 +1,24 @@
 db = db.getSiblingDB("metapoint")
 
 printjson(db.suggestions.aggregate(
-  // Group by values of 'foo' and count duplicates
+  // Restrict to IMDb suggestions
+  { $match: {
+    host: 'www.imdb.com'
+  }},
+
+  // Count instances of each path
   { $group: {
-    id: '$path',
+    _id: '$path',
     noteses: { $push: '$notes' },
     dupes: { $sum: 1 }
   }},
 
-  // Find the 'foo' values that are unpaired (odd number of dupes)
+  // Return suggestions with colliding paths
   { $match: {
     dupes: { $gt:1 }
   }},
 
+  // Only return the noteses, precious
   { $project: {
     noteses: 1
   }}
