@@ -18,4 +18,4 @@ html
     for item in reportItems
       li <span class="name">#{item.topic}</span>
         if (item.scope)
-          span.scope= item.scope
+          | (<span class="name">#{item.scope}</span>)
