@@ -93,6 +93,8 @@ function apimerge(db){
 //POST /api/drop
 //Just the "delete suggestion" part of the above API call.
 function apidrop(db){
+  //All actions taken in the admin cp should be logged.
+  var oplog = db.collection('oplog')
   var suggs = db.collection('suggestions')
 
   return function(req,res){
