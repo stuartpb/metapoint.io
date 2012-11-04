@@ -98,8 +98,18 @@ function apidrop(db){
   return function(req,res){
     var reqsid = req.param('sid')
     var sidoid = new ObjectID(reqsid)
-    suggs.remove({_id: reqsid})
-    res.send(200,'OK')
+    suggs.findOne({_id: reqsid},function(err,doc){
+      if(err){
+        res.send(500,err)
+      else {
+        oplog.insert({
+          action: 'forget',
+          suggestion: doc
+        })
+        suggs.remove({_id: reqsid})}
+        res.send(200)
+      }
+    })
   }
 }
 
