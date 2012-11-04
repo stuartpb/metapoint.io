@@ -19,10 +19,20 @@ html
       textarea {
         width: 90%;
       }
+      #refresh-label {
+        position: absolute;
+        right: 1em;
+        top: 1em;
+      }
     script(src='static/xhrapi.js')
     script
-      function removeFromDOM(node) {
-        node.parentNode.removeChild(node)
+      function removeFromSuggestions(node) {
+        var sugforms = document.getElementById("sugforms")
+        sugforms.removeChild(node)
+        if(sugforms.children.length == 0 &&
+          document.getElementById("refreshonex").checked){
+          document.location.reload();
+        }
       }
 
       function approveAll() {
@@ -31,12 +41,14 @@ html
         for (var i = 0; i < sugforms.length; ++i) {
           var sugform = sugforms[i];
           if (sugform.elements.namedItem('batchok').checked){
-            approve(sugform)
+            approve(sugform,removeFromSuggestions)
           }
         }
       }
   body
     h1 Suggestions
+    label#refresh-label Refresh on exhaustion
+      input(type="checkbox", id="refreshonex", checked)
     #sugforms
       for suggestion, i in suggestions
         form(id="suggestion-"+i).suggestion
@@ -61,7 +73,7 @@ html
               br
               textarea(name="notes")= suggestion.notes
           .actions
-            button(type="button",onclick="approve(this.form,removeFromDOM)") Approve
-            button(type="button",onclick="drop(this.form,removeFromDOM)") Remove
+            button(type="button",onclick="approve(this.form,removeFromSuggestions)") Approve
+            button(type="button",onclick="drop(this.form,removeFromSuggestions)") Remove
             button Deal With Later
     button#batchy(onclick="approveAll()") Approve All Checked Suggestions
