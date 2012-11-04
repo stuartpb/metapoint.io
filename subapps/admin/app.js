@@ -106,7 +106,7 @@ function apidrop(db){
           action: 'forget',
           suggestion: doc
         })
-        suggs.remove({_id: reqsid})}
+        suggs.remove({_id: reqsid})
         res.send(200)
       }
     })
