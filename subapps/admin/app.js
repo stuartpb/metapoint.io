@@ -101,7 +101,7 @@ function apidrop(db){
     suggs.findOne({_id: reqsid},function(err,doc){
       if(err){
         res.send(500,err)
-      else {
+      } else {
         oplog.insert({
           action: 'forget',
           suggestion: doc
