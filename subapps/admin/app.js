@@ -5,6 +5,7 @@
 //authentication scheme, but it's OK for now.
 
 var express = require('express');
+var ObjectID = require('mongodb').ObjectID;
 
 function suggestions(db,adminpath){
   //The topics collection might be useful at some point in the future
@@ -60,6 +61,7 @@ function apimerge(db){
       scope: reqscope
     },{$set: updata}, true)
     if(reqsid){
+      var sidoid = new ObjectID(reqsid)
       oplog.insert({
         action: 'upsert',
         suggestion: {
@@ -68,10 +70,10 @@ function apimerge(db){
           host: reqhost,
           path: reqpath,
           notes: reqnotes,
-          _id: reqsid
+          _id: sidoid
         }
       })
-      suggs.remove({_id: reqsid})
+      suggs.remove({_id: sidoid})
     } else {
       oplog.insert({
         action: 'write',
@@ -95,6 +97,7 @@ function apidrop(db){
 
   return function(req,res){
     var reqsid = req.param('sid')
+    var sidoid = new ObjectID(reqsid)
     suggs.remove({_id: reqsid})
     res.send(200,'OK')
   }
