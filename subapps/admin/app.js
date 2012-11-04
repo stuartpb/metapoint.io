@@ -13,7 +13,7 @@ function suggestions(db,adminpath){
   var suggs = db.collection('suggestions')
 
   return function(req,res){
-    suggs.find().limit(20).toArray(function(err,top20){
+    suggs.find().sort({_id:-1}).limit(20).toArray(function(err,top20){
       res.render('suggestions',{suggestions: top20, adminpath:adminpath})
     })
   }
@@ -108,7 +108,7 @@ function apidrop(db){
 module.exports = function(db,path){
   var admin = express();
 
-  admin.set('views', __dirname + '/views/admin');
+  admin.set('views', __dirname + '/views');
   admin.set('view engine', 'jade');
   admin.locals.pretty = true;
 
@@ -121,6 +121,8 @@ module.exports = function(db,path){
   admin.get('/reports/films',report(db,{scope: /film$/,host:'en.wikipedia.org'},"Films"))
   admin.post('/api/merge',apimerge(db))
   admin.post('/api/drop',apidrop(db))
+  admin.use('/static',express.static(__dirname+'/static'))
+
 
   return admin
 }
