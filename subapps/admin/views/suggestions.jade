@@ -61,7 +61,7 @@ html
               br
               textarea(name="notes")= suggestion.notes
           .actions
-            button(onclick="approve(this.form,removeFromDOM)") Approve
-            button(onclick="drop(this.form,removeFromDOM)") Remove
+            button(type="button",onclick="approve(this.form,removeFromDOM)") Approve
+            button(type="button",onclick="drop(this.form,removeFromDOM)") Remove
             button Deal With Later
     button#batchy(onclick="approveAll()") Approve All Checked Suggestions
