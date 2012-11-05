@@ -3,19 +3,48 @@
   <head>
     <meta charset="utf-8">
     <title>Metapoint</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/bootstrap.css" rel="stylesheet">
     <style>
-    body{font-family:sans-serif;}
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
     </style>
-    <script>
-    </script>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-    <header>
-      <img src="/wordmark.png" alt="metapoint.io">
-    </header>
-    <h1>What is this?</h1>
-    <p>It's basically just like a wiki for tracking different pages for the same thing across different sites.<p>
-    <h1>How does it work?</h1>
-    <p>I'm in a bit of a rush at the moment- check out the form on <a href="suggest.html">the suggestion page</a> for the current use of the suggestion API. (The idea is, you have one topic, and then each URL is the page for that topic on its site, ie. the Wikipedia, IMDB, Netflix, and Hulu pages.)</p>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#"><img src="/wordmark-white@20px.png" alt="metapoint.io"></a>
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#usage">Usage</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+
+      <h1 id="about">About</h1>
+      <p>metapoint.io is an API-based open database of the paths to pages for various topics on different sites.<p>
+
+      <h1 id="usage">Usage</h1>
+      <p>See <a href="https://github.com/stuartpb/metapoint.io/wiki/v0-API">the wiki page on github</a> for the API documentation.</p>
+
+      <h1 id="contact">Contact</h1>
+      <p>A Stuart P. Bentley production. You can stalk me on <a href="https://github.com/stuartpb">GitHub</a> or <a href="https://www.facebook.com/stuartpb">Facebook</a>, or email me at <a href="mailto:stuart@testtrack4.com">stuart@testtrack4.com</a>.<p>
+
+    </div>
+
   </body>
 </html>
