@@ -27,13 +27,18 @@ html
     script(src='static/xhrapi.js')
     script
       function removeFromSuggestions(node) {
-        var sugforms = document.getElementById("sugforms")
-        sugforms.removeChild(node)
-        if(sugforms.children.length == 0 &&
-          document.getElementById("refreshonex").checked){
-          document.location.reload();
+        return function() {
+          var sugforms = document.getElementById("sugforms")
+          sugforms.removeChild(node)
+          if(sugforms.children.length == 0 &&
+            document.getElementById("refreshonex").checked){
+            document.location.reload();
+          }
         }
       }
+
+      var approve = callWithForm('merge',removeFromSuggestions)
+      var drop = callWithForm('drop',removeFromSuggestions)
 
       function approveAll() {
         var sugforms = document.getElementById("sugforms").children;
@@ -41,7 +46,7 @@ html
         for (var i = 0; i < sugforms.length; ++i) {
           var sugform = sugforms[i];
           if (sugform.elements.namedItem('batchok').checked){
-            approve(sugform,removeFromSuggestions)
+            approve(new FormData(sugform),removeFromSuggestions(node))
           }
         }
       }
@@ -73,7 +78,7 @@ html
               br
               textarea(name="notes")= suggestion.notes
           .actions
-            button(type="button",onclick="approve(this.form,removeFromSuggestions)") Approve
-            button(type="button",onclick="drop(this.form,removeFromSuggestions)") Remove
+            button(type="button",onclick="approve(new FormData(this.form),removeFromSuggestions(node))") Approve
+            button(type="button",onclick="drop(new FormData(this.form),removeFromSuggestions(node))") Remove
             button Deal With Later
     button#batchy(onclick="approveAll()") Approve All Checked Suggestions

@@ -1,22 +1,18 @@
-function approve(form,onok) {
+function apicall(method,formdata,onok) {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST','api/merge',true)
+  xhr.open('POST','api/'+method,true)
   xhr.onload=function(e){
     if (xhr.status='200' && onok) {
-      onok(form)
+      onok()
     }
   }
-  xhr.send(new FormData(form))
+  xhr.send(formdata)
 }
 
-function drop(form,onok) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST','api/drop',true)
-  xhr.onload=function(e){
-    if (xhr.status='200' && onok) {
-      onok(form)
-    }
+function callWithForm(method, callbackConstructor) {
+  return function(form) {
+    apicall(method,new FormData(form),
+      callbackConstructor(form))
   }
-  xhr.send(new FormData(form))
 }
 
