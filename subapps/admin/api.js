@@ -98,25 +98,24 @@ function drop(db){
       }
       if(query.host && (query.topic || query.path)){
         var cursor = suggs.find(query)
-        var found = false
-        cursor.each(function(err,doc) {
+        cursor.toArray(function(err,arr) {
           if(err){
             res.send(500,err)
-          } else {
-            if(doc) { //null is returned after iterating through all docs
-              found = true
+          } else if(arr.length > 0) {
+            arr.forEach(function(doc){
               oplog.insert({
                 action: 'forget-by-value',
                 suggestion: doc
               })
               suggs.remove({_id: doc._id})
-            } else if(!found) { //if the first run of the each callback did nothing
-              res.send(400, "Requested value not found")
-            } else {
-              res.send(200)
-            }
+            })
+            res.send(200)
+          } else {
+            res.send(400, "Requested value not found")
           }
         })
+      } else {
+        res.send(400, "Insufficient data to find suggestion")
       }
     }
   }
