@@ -59,7 +59,7 @@ html
       var approve = callWithShadowWikipediaFD('merge')
       var drop = callWithShadowWikipediaFD('drop')
   body
-    for collision in result
+    for collision in collisions
       .collisiongroup
         url = collision.host + collision.path
         a(href='http://'+url).decider= url
