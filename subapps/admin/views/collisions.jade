@@ -25,10 +25,17 @@ html
         width: 800px;
         border: 4px solid black;
       }
+      #count {
+        position: fixed;
+        right: 0;
+        font-size: 48pt;
+      }
     script(src='static/xhrapi.js')
     script
       function removeFromGroup(node) {
         return function() {
+          var count = document.getElementById('count')
+          count.textContent = count.textContent.toNumber()-1
           var group = node.parentNode
           group.removeChild(node)
           if(group.children.length < 3){
@@ -50,6 +57,7 @@ html
           apicall('drop',new FormData(form),removeFromGroup(form))
         }
   body
+    #count= collisions.length
     for collision in collisions
       .collisiongroup
         url = collision.host + collision.path
