@@ -35,7 +35,7 @@ html
       function removeFromGroup(node) {
         return function() {
           var count = document.getElementById('count')
-          count.textContent = count.textContent.toNumber()-1
+          count.textContent = count.textContent -1
           var group = node.parentNode
           group.removeChild(node)
           if(group.children.length < 3){
