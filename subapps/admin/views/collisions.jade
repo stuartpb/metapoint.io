@@ -37,15 +37,17 @@ html
         }
       }
       function drop(form) {
-          var wpfd = new FormData()
-          var title = form.elements.namedItem('topic').value
-          wpfd.append('topic',title)
-          wpfd.append('scope',form.elements.namedItem('scope').value)
-          wpfd.append('host','en.wikipedia.org')
+          var scope = form.elements.namedItem('scope').value
+          if(scope) { //I already approved all scopeless Wikipedia suggestions, d'oh!
+            var wpfd = new FormData()
+            var title = form.elements.namedItem('topic').value
+            wpfd.append('topic',title)
+            wpfd.append('scope',scope)
+            wpfd.append('host','en.wikipedia.org')
+            apicall('drop',wpfd)
+          }
 
-          apicall('drop',wpfd)
-
-          apicall(method,new FormData(form),removeFromGroup(form))
+          apicall('drop',new FormData(form),removeFromGroup(form))
         }
   body
     for collision in collisions
