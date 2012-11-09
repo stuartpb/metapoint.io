@@ -73,4 +73,4 @@ html
             textarea(name="notes")= suggestion.notes
             .actions
               button(type="button",onclick="drop(this.form)") Remove
-              a(href='en.wikipedia.org/wiki/' + encodeURIComponent(suggestion.notes.match(/^WELP (.*)$/).replace(' ','_')) (Wikipedia page)
+              a(href='en.wikipedia.org/wiki/' + encodeURIComponent(suggestion.notes.match(/^WELP (.*)$/).replace(' ','_'))) (Wikipedia page)
