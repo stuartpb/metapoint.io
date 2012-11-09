@@ -41,6 +41,7 @@ function collisions(db,adminpath){
       { $group: {
         _id: {host: "$host", path: '$path'},
         suggestions: { $push: {
+          _id: '$_id',
           topic: '$topic',
           scope: '$scope',
           notes: '$notes'
