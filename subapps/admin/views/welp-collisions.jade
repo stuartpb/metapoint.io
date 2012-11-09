@@ -69,6 +69,7 @@ html
           - var wppath =
           form.suggestion
             input(type="hidden",name="sid",value=suggestion._id)
+            input(type="hidden",name="topic",value=suggestion.topic)
             input(type="hidden",name="scope",value=suggestion.scope)
             textarea(name="notes")= suggestion.notes
             .actions
