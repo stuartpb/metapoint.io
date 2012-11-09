@@ -36,7 +36,7 @@ function collisions(db,adminpath){
   var suggs = db.collection('suggestions')
 
   return function(req,res){
-    db.suggestions.aggregate([
+    suggs.aggregate([
       // Count instances of each path
       { $group: {
         _id: {host: "$host", path: '$path'},
