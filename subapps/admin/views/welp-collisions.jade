@@ -74,5 +74,5 @@ html
             .actions
               button(type="button",onclick="drop(this.form)") Remove
               wptitle = suggestion.notes.match(/^WELP (.*)$/m)
-              if wptitle and wptitle[1]
+              if wptitle && wptitle[1]
                 a(href='en.wikipedia.org/wiki/' + encodeURIComponent(wptitle[1].replace(' ','_'))) (Wikipedia page)
