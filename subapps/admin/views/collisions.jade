@@ -31,7 +31,7 @@ html
         return function() {
           var group = node.parentNode
           group.removeChild(node)
-          if(group.children.length == 1){
+          if(group.children.length < 3){
             group.parentNode.removeChild(group);
           }
         }
