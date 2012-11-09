@@ -98,13 +98,13 @@ function drop(db){
       }
       if(query.host && (query.topic || query.path)){
         var cursor = suggs.find(query)
-        cursor.each(err,doc) {
+        cursor.each(function(err,doc) {
           oplog.insert({
             action: 'forget-by-value',
             suggestion: doc
           })
           suggs.remove({_id: doc._id})
-        }
+        })
       }
     }
   }
