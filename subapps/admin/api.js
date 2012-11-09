@@ -111,6 +111,7 @@ function drop(db){
               })
               suggs.remove({_id: doc._id})
             } else if(!found) { //if the first run of the each callback did nothing
+              console.log(query)
               res.send(400, "Requested value not found")
             } else {
               res.send(200)
@@ -118,7 +119,7 @@ function drop(db){
           }
         })
       } else {
-        res.send(400, "Requested value not found")
+        res.send(400, "Insufficient data to find suggestion")
       }
     }
   }
