@@ -102,11 +102,13 @@ function drop(db){
           if(err){
             res.send(500,err)
           } else {
-            oplog.insert({
-              action: 'forget-by-value',
-              suggestion: doc
-            })
-            suggs.remove({_id: doc._id})
+            if(doc) { //null is returned after iterating through all docs
+              oplog.insert({
+                action: 'forget-by-value',
+                suggestion: doc
+              })
+              suggs.remove({_id: doc._id})
+            }
           }
         })
       }
