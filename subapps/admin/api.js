@@ -91,9 +91,9 @@ function drop(db){
       })
     } else {
       var query = {
-        topic: req.param('topic') || undefined
-        scope: req.param('scope') === "" ? null : undefined
-        host: req.param('host') || undefined
+        topic: req.param('topic') || undefined,
+        scope: req.param('scope') === "" ? null : undefined,
+        host: req.param('host') || undefined,
         path: req.param('path') || undefined
       }
       if(query.host && (query.topic || query.path)){
