@@ -29,6 +29,43 @@ function report(db, query, name){
   }
 }
 
+function collisions(db,adminpath){
+  //The topics collection might be useful at some point in the future
+  //(list any conflict with existing topic), but not now.
+
+  var suggs = db.collection('suggestions')
+
+  return function(req,res){
+    db.suggestions.aggregate([
+      // Count instances of each path
+      { $group: {
+        _id: {host: "$host", path: '$path'},
+        suggestions: { $push: {
+          topic: '$topic',
+          scope: '$scope',
+          notes: '$notes'
+        } },
+        dupes: { $sum: 1 }
+      }},
+
+      // Return suggestions with colliding paths
+      { $match: {
+        dupes: { $gt:1 }
+      }},
+
+      { $project: {
+        suggestions: 1,
+        host: '$_id.host',
+        path: '$_id.path',
+        _id: 0
+      }}],
+      function(err,result) {
+        res.render('suggestions',{collisions: result, adminpath:adminpath})
+      }
+    )
+  }
+}
+
 //Removing/editing the existing topics database entries
 //is the kind of thing I'll just leave to the straight Mongo CLI.
 
