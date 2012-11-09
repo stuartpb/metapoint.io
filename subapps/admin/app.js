@@ -61,7 +61,7 @@ function collisions(db,adminpath){
         _id: 0
       }}],
       function(err,result) {
-        res.render('collisions',{collisions: result, adminpath:adminpath})
+        res.render('welp-collisions',{collisions: result, adminpath:adminpath})
       }
     )
   }

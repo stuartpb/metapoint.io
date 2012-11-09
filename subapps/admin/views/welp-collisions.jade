@@ -1,0 +1,76 @@
+!!!
+html
+  head
+    meta(charset="utf-8")
+    title NO WAY!!! NO WAY!!!
+    style
+      body {
+        font-family: sans-serif;
+      }
+      form {
+        margin: 4px auto;
+        padding: 4px;
+        width: auto;
+        border: 4px solid maroon;
+      }
+      input[type="text"] {
+        width: 300px;
+      }
+      textarea {
+        width: 90%;
+      }
+      .collisiongroup {
+        margin: 4px auto;
+        padding: 4px;
+        width: 800px;
+        border: 4px solid black;
+      }
+      #count {
+        position: fixed;
+        right: 0;
+        font-size: 48pt;
+      }
+    script(src='static/xhrapi.js')
+    script
+      function removeFromGroup(node) {
+        return function() {
+          var count = document.getElementById('count')
+          count.textContent = count.textContent -1
+          var group = node.parentNode
+          group.removeChild(node)
+          if(group.children.length < 3){
+            group.parentNode.removeChild(group);
+          }
+        }
+      }
+      function drop(form) {
+          var scope = form.elements.namedItem('scope').value
+          if(scope) { //I already approved all scopeless Wikipedia suggestions, d'oh!
+            var wpfd = new FormData()
+            var topic = form.elements.namedItem('topic').value
+            wpfd.append('topic',topic)
+            wpfd.append('scope',scope)
+            wpfd.append('host','en.wikipedia.org')
+            apicall('drop',wpfd)
+          }
+
+          apicall('drop',new FormData(form),removeFromGroup(form))
+        }
+  body
+    #count= collisions.length
+    for collision in collisions
+      .collisiongroup
+        url = collision.host + collision.path
+        a(href='http://'+url).decider= url
+        for suggestion in collision.suggestions
+          - var wppath =
+          form.suggestion
+            input(type="hidden",name="sid",value=suggestion._id)
+            input(type="hidden",name="host",value=collision.host)
+            input(type="hidden",name="path",value=collision.path)
+            input(type="hidden", name="topic", value=suggestion.topic)
+            input(type="hidden", name="scope", value=suggestion.scope)
+            textarea(name="notes")= suggestion.notes
+            .actions
+              button(type="button",onclick="drop(this.form)") Remove
+              a(href='en.wikipedia.org/wiki/' + encodeURIComponent(suggestion.notes.match(/^WELP (.*)$/).replace(' ','_')) (Wikipedia page)
