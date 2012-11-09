@@ -66,10 +66,6 @@ html
           - var wppath =
           form.suggestion
             input(type="hidden",name="sid",value=suggestion._id)
-            input(type="hidden",name="host",value=collision.host)
-            input(type="hidden",name="path",value=collision.path)
-            input(type="hidden", name="topic", value=suggestion.topic)
-            input(type="hidden", name="scope", value=suggestion.scope)
             textarea(name="notes")= suggestion.notes
             .actions
               button(type="button",onclick="drop(this.form)") Remove
