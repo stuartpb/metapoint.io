@@ -110,9 +110,10 @@ function drop(db){
                 suggestion: doc
               })
               suggs.remove({_id: doc._id})
-              res.send(200)
-            } else if(!found) {
+            } else if(!found) { //if the first run of the each callback did nothing
               res.send(400, "Requested value not found")
+            } else {
+              res.send(200)
             }
           }
         })

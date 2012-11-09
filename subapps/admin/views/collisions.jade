@@ -31,40 +31,22 @@ html
         return function() {
           var group = node.parentNode
           group.removeChild(node)
-          if(group.children.length == 0){
+          if(group.children.length == 1){
             group.parentNode.removeChild(group);
           }
         }
       }
-      function callWithShadowWikipediaFD(method){
-        return function(form) {
+      function drop(form) {
           var wpfd = new FormData()
           var title = form.elements.namedItem('topic').value
           wpfd.append('topic',title)
           wpfd.append('scope',form.elements.namedItem('scope').value)
           wpfd.append('host','en.wikipedia.org')
 
-          //Don't send a path. We don't have enough information to
-          //reassemble it reliably (the links are like 80% reliable).
-          //(Technically, for the first WELP run,
-          //we could figure out if the scope is already
-          //appended to the topic by checking if it matches one of the
-          //regexes I stripped for, but... no.)
-
-          wpfd.append('notes','')
-
-          //yes, this is a goofy way to approach this,
-          //but it's the one way to do it that doesn't need the OID.
-          if(method == 'merge') {
-            apicall('merge',wpfd)
-          }
           apicall('drop',wpfd)
 
           apicall(method,new FormData(form),removeFromGroup(form))
         }
-      }
-      var approve = callWithShadowWikipediaFD('merge')
-      var drop = callWithShadowWikipediaFD('drop')
   body
     for collision in collisions
       .collisiongroup
