@@ -73,4 +73,6 @@ html
             textarea(name="notes")= suggestion.notes
             .actions
               button(type="button",onclick="drop(this.form)") Remove
-              a(href='en.wikipedia.org/wiki/' + encodeURIComponent(suggestion.notes.match(/^WELP (.*)$/m).replace(' ','_'))) (Wikipedia page)
+              wptitle = suggestion.notes.match(/^WELP (.*)$/m)
+              if wptitle and wptitle[1]
+                a(href='en.wikipedia.org/wiki/' + encodeURIComponent(wptitle[1].replace(' ','_'))) (Wikipedia page)
