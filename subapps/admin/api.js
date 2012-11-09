@@ -90,12 +90,15 @@ function drop(db){
         }
       })
     } else {
-      var query = {
-        topic: req.param('topic') || undefined,
-        scope: req.param('scope') === "" ? null : undefined,
-        host: req.param('host') || undefined,
-        path: req.param('path') || undefined
+      var query = {}
+      if (req.param('topic')) { query.topic = req.param('topic') }
+      if (req.param('scope')) { query.scope = req.param('scope') }
+      else if(req.param('scope') === ""){
+        query.scope = null
       }
+      if (req.param('host')) { query.host = req.param('host') }
+      if (req.param('path')) { query.path = req.param('path') }
+
       if(query.host && (query.topic || query.path)){
         var cursor = suggs.find(query)
         var found = false
@@ -111,7 +114,6 @@ function drop(db){
               })
               suggs.remove({_id: doc._id})
             } else if(!found) { //if the first run of the each callback did nothing
-              console.log(query)
               res.send(400, "Requested value not found")
             } else {
               res.send(200)
