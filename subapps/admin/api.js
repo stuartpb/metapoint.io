@@ -108,6 +108,7 @@ function drop(db){
                 suggestion: doc
               })
               suggs.remove({_id: doc._id})
+              res.send(200)
             }
           }
         })
