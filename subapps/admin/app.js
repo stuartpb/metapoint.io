@@ -60,7 +60,7 @@ function collisions(db,adminpath){
         _id: 0
       }}],
       function(err,result) {
-        res.render('suggestions',{collisions: result, adminpath:adminpath})
+        res.render('collisions',{collisions: result, adminpath:adminpath})
       }
     )
   }
@@ -84,6 +84,7 @@ module.exports = function(db,path){
     //on valid API paths
 
   admin.get('/suggestions',suggestions(db,path))
+  admin.get('/collisions',collisions(db,path))
   admin.get('/reports/films',report(db,{scope: /film$/,host:'en.wikipedia.org'},"Films"))
   admin.use('/api',require('./api.js')(db))
   admin.use('/static',express.static(__dirname+'/static'))
