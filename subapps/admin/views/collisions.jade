@@ -43,7 +43,7 @@ html
           wpfd.append('topic',title)
           wpfd.append('scope',form.elements.namedItem('scope').value)
           wpfd.append('host','en.wikipedia.org')
-          wpfd.append('path','/wiki/' + encodeURIComponent(title.replace(' ','_'))
+          wpfd.append('path','/wiki/' + encodeURIComponent(title.replace(' ','_')))
           wpfd.append('notes','')
 
           //yes, this is a goofy way to approach this,
@@ -80,4 +80,3 @@ html
             .actions
               button(type="button",onclick="approve(this.form)") Approve
               button(type="button",onclick="drop(this.form)") Remove
-              button Deal With Later
