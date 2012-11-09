@@ -43,7 +43,14 @@ html
           wpfd.append('topic',title)
           wpfd.append('scope',form.elements.namedItem('scope').value)
           wpfd.append('host','en.wikipedia.org')
-          wpfd.append('path','/wiki/' + form.elements.namedItem('wppath').value)
+
+          //Don't send a path. We don't have enough information to
+          //reassemble it reliably (the links are like 80% reliable).
+          //(Technically, for the first WELP run,
+          //we could figure out if the scope is already
+          //appended to the topic by checking if it matches one of the
+          //regexes I stripped for, but... no.)
+
           wpfd.append('notes','')
 
           //yes, this is a goofy way to approach this,

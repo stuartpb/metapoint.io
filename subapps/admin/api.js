@@ -98,17 +98,21 @@ function drop(db){
       }
       if(query.host && (query.topic || query.path)){
         var cursor = suggs.find(query)
+        var found = false
         cursor.each(function(err,doc) {
           if(err){
             res.send(500,err)
           } else {
             if(doc) { //null is returned after iterating through all docs
+              found = true
               oplog.insert({
                 action: 'forget-by-value',
                 suggestion: doc
               })
               suggs.remove({_id: doc._id})
               res.send(200)
+            } else if(!found) {
+              res.send(400, "Requested value not found")
             }
           }
         })
