@@ -38,8 +38,11 @@ html
           count.textContent = count.textContent -1
           var group = node.parentNode
           group.removeChild(node)
+          //if there's only 1 left
           if(group.children.length < 3){
+            //remove these duplicates and decrement the count by 1 more
             group.parentNode.removeChild(group);
+            count.textContent = count.textContent -1
           }
         }
       }
@@ -66,6 +69,7 @@ html
           - var wppath =
           form.suggestion
             input(type="hidden",name="sid",value=suggestion._id)
+            input(type="hidden",name="scope",value=suggestion.scope)
             textarea(name="notes")= suggestion.notes
             .actions
               button(type="button",onclick="drop(this.form)") Remove
