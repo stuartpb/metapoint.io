@@ -23,7 +23,7 @@ function report(db, query, name){
   var suggs = db.collection('suggestions')
 
   return function(req,res){
-    suggs.find(query).sort({topic:-1}).toArray(function(err,arr){
+    suggs.find(query).sort({topic:1}).toArray(function(err,arr){
       res.render('reports',{reportItems: arr, reportName: name})
     })
   }
