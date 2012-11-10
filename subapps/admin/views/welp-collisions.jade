@@ -39,7 +39,7 @@ html
           group.removeChild(node)
           //if there's only 1 left
           if(group.getElementsByTagName('form').length <= 1){
-            //remove these duplicates and decrement the count by 1 more
+            //remove this group and decrement the count of duplicates by 1
             group.parentNode.removeChild(group);
             count.textContent = count.textContent - 1
           }
@@ -71,7 +71,7 @@ html
           apicall('drop',new FormData(form),
             function(){div.removeChild(form)})
         }
-        div.parentNode.removeChild(group);
+        div.parentNode.removeChild(div);
         count.textContent = count.textContent - 1
       }
   body
