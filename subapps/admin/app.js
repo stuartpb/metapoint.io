@@ -23,7 +23,7 @@ function report(db, query, name){
   var suggs = db.collection('suggestions')
 
   return function(req,res){
-    suggs.find(query).toArray(function(err,arr){
+    suggs.find(query).sort({topic:-1}).toArray(function(err,arr){
       res.render('reports',{reportItems: arr, reportName: name})
     })
   }
@@ -87,7 +87,7 @@ module.exports = function(db,path){
   admin.get('/suggestions',suggestions(db,path))
   admin.get('/collisions',collisions(db,path))
   admin.get('/reports/films',report(db,{scope: /film$/,host:'en.wikipedia.org'},"Films"))
-  admin.get('/reports/seasons',report(db,{scope: /^[Ss]eason /,host:'en.wikipedia.org'},"Seasons"))
+  admin.get('/reports/seasons',report(db,{scope: /[Ss]eason/,host:'en.wikipedia.org'},"Seasons"))
   admin.use('/api',require('./api.js')(db))
   admin.use('/static',express.static(__dirname+'/static'))
 
