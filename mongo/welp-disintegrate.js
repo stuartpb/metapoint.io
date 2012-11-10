@@ -1,5 +1,5 @@
-//run this script with `--eval "var iScope = /film$/"`
-//to integrate all films
+//run this script with `--eval "var iScope = /[Ss]eason/"`
+//to disintegrate all seasons
 
 var integrateScope = iScope || null
 
@@ -22,8 +22,10 @@ if (count > 0 && iScope != null) {
     })
     db.suggestions.remove({_id: doc._id})
     ++i;
-    if((count/i)%1>lastPct) {
-      print(i+' of '+count+' processed ('+((count/i)%1)+'%)')
+    if (Math.floor((count/i)*100) > lastPct) {
+      print( i + ' of ' + count + ' processed '+
+        '(' + Math.floor((count/i)*100) + '%)')
+      lastPct = Math.floor((count/i)*100)
     }
   })
 } else {

@@ -29,8 +29,10 @@ if (count > 0) {
     })
     db.suggestions.remove({_id: doc._id})
     ++i;
-    if((count/i)%1>lastPct) {
-      print(i+' of '+count+' processed ('+((count/i)%1)+'%)')
+    if (Math.floor((count/i)*100) > lastPct) {
+      print( i + ' of ' + count + ' processed '+
+        '(' + Math.floor((count/i)*100) + '%)')
+      lastPct = Math.floor((count/i)*100)
     }
   })
 } else {
