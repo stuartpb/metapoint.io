@@ -38,7 +38,7 @@ html
           var group = node.parentNode
           group.removeChild(node)
           //if there's only 1 left
-          if(group.children.length < 3){
+          if(group.getElementsByTagName('form').length <= 1){
             //remove these duplicates and decrement the count by 1 more
             group.parentNode.removeChild(group);
             count.textContent = count.textContent - 1
