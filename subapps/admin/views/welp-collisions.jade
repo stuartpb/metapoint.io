@@ -41,29 +41,46 @@ html
           if(group.children.length < 3){
             //remove these duplicates and decrement the count by 1 more
             group.parentNode.removeChild(group);
-            count.textContent = count.textContent -1
+            count.textContent = count.textContent - 1
           }
         }
       }
-      function drop(form) {
-          var scope = form.elements.namedItem('scope').value
-          if(scope) { //I already approved all scopeless Wikipedia suggestions, d'oh!
-            var wpfd = new FormData()
-            var topic = form.elements.namedItem('topic').value
-            wpfd.append('topic',topic)
-            wpfd.append('scope',scope)
-            wpfd.append('host','en.wikipedia.org')
-            apicall('drop',wpfd)
-          }
 
-          apicall('drop',new FormData(form),removeFromGroup(form))
+      function dropWikipediaSuggestion(form) {
+        var scope = form.elements.namedItem('scope').value
+        if(scope) { //I already approved all scopeless Wikipedia suggestions, d'oh!
+          var wpfd = new FormData()
+          var topic = form.elements.namedItem('topic').value
+          wpfd.append('topic',topic)
+          wpfd.append('scope',scope)
+          wpfd.append('host','en.wikipedia.org')
+          apicall('drop',wpfd)
         }
+      }
+
+      function drop(form) {
+        dropWikipediaSuggestion(form)
+        apicall('drop',new FormData(form),removeFromGroup(form))
+      }
+
+      function dropAll(div) {
+        var sugforms = div.getElementsByTagName('form')
+        for (var i = 0; i < sugforms.length; ++i) {
+          var form = sugforms[i];
+          dropWikipediaSuggestion(form)
+          apicall('drop',new FormData(form),
+            function(){div.removeChild(form)})
+        }
+        div.parentNode.removeChild(group);
+        count.textContent = count.textContent - 1
+      }
   body
     #count= collisions.length
     for collision in collisions
       .collisiongroup
         url = collision.host + collision.path
         a(href='http://'+url).decider= url
+        button(type="button",onclick="dropAll(this.parentNode)") Remove All
         for suggestion in collision.suggestions
           - var wppath =
           form.suggestion
