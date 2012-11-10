@@ -3,28 +3,21 @@
 
 var integrateScope = iScope || null
 
-//I'll figure out the other ones later, they're more complicated.
-var integrateHost = 'en.wikipedia.org'
-
 db = db.getSiblingDB("metapoint")
 
 var cursor = db.suggestions.find({
-  host: integrateHost
   scope: integrateScope
 })
+
 var count = cursor.count()
-if (count > 0) {
+
+//this second part is a bit of a hack,
+//but I don't want to batch-remove null scope (yet)
+if (count > 0 && iScope != null) {
   var i = 0, lastPct = 0
   cursor.forEach(function(doc) {
-    var updata = {}
-    updata['sites.'+doc.host.replace(/\./g,'_')] = doc.path
-
-    db.topics.update({
-      topic: doc.topic,
-      scope: doc.scope
-    },{ $set: updata },true)
     db.oplog.insert({
-      action: 'transfer',
+      action: 'yank',
       suggestion: doc
     })
     db.suggestions.remove({_id: doc._id})
