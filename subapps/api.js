@@ -20,8 +20,10 @@ function pagelist(db){
     res.setHeader("Access-Control-Allow-Origin",'*')
 
     var cursor = topix.find({topic: req.param('topic')})
-    cursor.count(function(count,doc){
-      if(count==0){
+    cursor.count(function(err,count){
+      if(err){
+        errespond(res,500,err)
+      } else if(count==0){
         //FEATURE: case-insensitivity
           //NEEDS: lc_topic field on topic entries
           //NEEDS: disambiguation object support
@@ -59,7 +61,7 @@ function pagelist(db){
           //(ie. just the en.wikipedia.org page) via query string
           res.send(doc);
         }) //cursor.nextObject callback
-      } // if (count==0) else
+      } // if (err) else if (count==0) else
     }) //cursor.count callback
   } // /pagelist callback
 }// pagelist constructor
