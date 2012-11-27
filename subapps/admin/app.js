@@ -16,7 +16,7 @@ function suggestions(db,adminpath){
     suggs.find().sort({_id:-1}).limit(20).toArray(function(err,top20){
       
       //Ensure the suggestions are always recent
-      res.setHeader('Cache-control','no-cache')
+      res.setHeader('Cache-control','no-cache, must-revalidate')
       
       res.render('suggestions',{suggestions: top20, adminpath:adminpath})
     })
@@ -30,7 +30,7 @@ function report(db, query, name){
     suggs.find(query).sort({topic:1}).toArray(function(err,arr){
       
       //Ensure the suggestions are always recent
-      res.setHeader('Cache-control','no-cache')
+      res.setHeader('Cache-control','no-cache, must-revalidate')
 
       res.render('reports',{reportItems: arr, reportName: name})
     })
@@ -71,7 +71,7 @@ function collisions(db,adminpath){
       function(err,result) {
         
         //Ensure the suggestions are always recent
-        res.setHeader('Cache-control','no-cache')
+        res.setHeader('Cache-control','no-cache, must-revalidate')
       
         res.render('welp-collisions',{collisions: result, adminpath:adminpath})
       }
