@@ -79,6 +79,8 @@ function suggest(db){
   var topix = db.collection('topics')
 
   return function(req,res){
+    var scope = req.param('scope')
+    if(scope===''){scope=null}
     if(req.param('url')) {
       var urlObj = url.parse(req.param('url'))
 
@@ -100,7 +102,7 @@ function suggest(db){
         //Create preliminary suggestion object (searchable for collisions)
         var suggestion = {
           topic: req.param('topic'),
-          scope: req.param('scope'),
+          scope: scope,
           host: host,
           path: path,
         }
@@ -109,7 +111,7 @@ function suggest(db){
         
         var topicQuery = {
           topic: req.param('topic'),
-          scope: req.param('scope'),
+          scope: scope,
           sites:{}  
         }
         
