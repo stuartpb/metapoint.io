@@ -19,7 +19,11 @@ function pagelist(db){
     //even if it's an error or something
     res.setHeader("Access-Control-Allow-Origin",'*')
 
-    var cursor = topix.find({topic: req.param('topic')})
+    var cursor = topix.find({
+      topic: req.param('topic'),
+      //TODO: scope should be handled better than this
+      scope: req.param('scope')
+    })
     cursor.count(function(err,count){
       if(err){
         errespond(res,500,err)
@@ -70,52 +74,99 @@ function suggest(db){
   //The collection to add to.
   var suggs = db.collection('suggestions')
 
+  //Bounce redundant suggestions (in the future there may be better ways)
+  //Need topic connection to do that
+  var topix = db.collection('topics')
+
   return function(req,res){
-    var host = req.param('host')
-    var path = req.param('path')
-    //console.log(req)
-    if(!(host && path)){
-      if(req.param('url')) {
-        var urlObj = url.parse(req.param('url'))
+    if(req.param('url')) {
+      var urlObj = url.parse(req.param('url'))
 
-        //CONSIDER: What to do with the scheme and slashes? It's not out of the
-          //question that http vs. https could matter for the host.
+      //CONSIDER: What to do with the scheme and slashes? It's not out of the
+        //question that http vs. https could matter for the host.
 
-        //this is kind of redundant but not quite?
-        if(urlObj.host && urlObj.path) {
-          host = urlObj.host
-          path = urlObj.path
-        } else {
-          errespond(res,400,"URL malformed")
+      //this is kind of redundant but not quite?
+      if(urlObj.host && urlObj.path) {
+        var host = urlObj.host
+        var path = urlObj.path
+
+        //FEATURE: Strip/use URL prefixes from hosts?
+    
+        //FEATURE: verify valid host/path
+          //Ensure they don't contain invalid characters
+          //Check if the host/page exists?
+            //Don't want to be a proxy request spam vector
+        
+        //Create preliminary suggestion object (searchable for collisions)
+        var suggestion = {
+          topic: req.param('topic'),
+          scope: req.param('scope'),
+          host: host,
+          path: path,
         }
+        
+        var topicResult, suggestionResult
+        
+        var topicQuery = {
+          topic: req.param('topic'),
+          scope: req.param('scope'),
+          sites:{}  
+        }
+        
+        topicQuery.sites[host.replace(/\./g,'_')] = path
+        
+        topix.find(topicQuery).count(function(err,count){
+          if(err){
+            errespond(res,500,err)
+          } else if(count < 0){
+            topicResult = 'found'
+            moveForward()
+          } else {
+            topicResult = 'not found'
+            moveForward()
+          }
+        })
+        
+        suggs.find(suggestion).count(function(err,count){
+          if(err){
+            errespond(res,500,err)
+          } else if(count < 0){
+            suggestionResult = 'found'
+            moveForward()
+          } else {
+            suggestionResult = 'not found'
+            moveForward()
+          }
+        })
+        
+        function moveForward() {
+          if(topicResult && suggestionResult) {
+            if(topicResult == 'found'){
+              res.send({result:'Host already resolves to path for given topic'})
+            } else if(suggestionResult == 'found') {
+              res.send({result:'Suggestion already noted'})
+            } else {
+              //Add remaining suggestion parameters
+              suggestion.notes = req.param('notes')
+              //FEATURE: log identity in some way (key, session, IP address)
+                //Currently this is kind of what the "notes" thing is for
+         
+              //Add suggestion object to suggestions database
+              suggs.insert(suggestion)
+          
+              //Return a success code
+              res.send({result:"Suggestion added"})
+            }
+          }
+        } //otherwise we're still waiting for all the results, do nothing
       } else {
-        //Respond with an error saying that a URL must be included
-        //if site and path are not
-        errespond(res,400,"No URL or site/path pair")
+        errespond(res,400,"URL malformed")
       }
+    } else {
+      //Respond with an error saying that a URL must be included
+      //if site and path are not
+      errespond(res,400,"No URL or site/path pair")
     }
-    //FEATURE: Strip/use URL prefixes from hosts?
-
-    //FEATURE: verify valid host/path
-      //Ensure they don't contain invalid characters
-      //Check if the host/page exists?
-
-    //Create a new suggestion object
-    var suggestion = {
-      topic: req.param('topic'),
-      scope: req.param('scope'),
-      host: host,
-      path: path,
-      notes: req.param('notes')
-    //FEATURE: log identity in some way (key, session, IP address)
-      //Currently this is kind of what the "notes" thing is for
-    }
-
-    //Add suggestion object to suggestions database
-    suggs.insert(suggestion)
-
-    //Return a success code
-    res.send(200)
   } // /suggest callback
 }// suggest constructor
 
