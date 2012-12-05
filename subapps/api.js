@@ -79,6 +79,7 @@ function suggest(db){
   var topix = db.collection('topics')
 
   return function(req,res){
+    var topic = req.param('topic')
     var scope = req.param('scope')
     if(scope===''){scope=null}
     if(req.param('url')) {
@@ -101,7 +102,7 @@ function suggest(db){
         
         //Create preliminary suggestion object (searchable for collisions)
         var suggestion = {
-          topic: req.param('topic'),
+          topic: topic,
           scope: scope,
           host: host,
           path: path,
@@ -110,14 +111,14 @@ function suggest(db){
         var topicResult, suggestionResult
         
         var topicQuery = {
-          topic: req.param('topic'),
+          topic: topic,
           scope: scope,
           sites:{}  
         }
         
         topicQuery.sites[host.replace(/\./g,'_')] = path
         
-        topix.find(topicQuery).count(function(err,count){
+        topix.count(topicQuery,function(err,count){
           if(err){
             errespond(res,500,err)
           } else if(count < 0){
@@ -129,7 +130,7 @@ function suggest(db){
           }
         })
         
-        suggs.find(suggestion).count(function(err,count){
+        suggs.count(suggestion,function(err,count){
           if(err){
             errespond(res,500,err)
           } else if(count < 0){
@@ -141,7 +142,7 @@ function suggest(db){
           }
         })
         
-        function moveForward() {
+        var moveForward = function() {
           if(topicResult && suggestionResult) {
             if(topicResult == 'found'){
               res.send({result:'Host already resolves to path for given topic'})
