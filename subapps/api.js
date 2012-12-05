@@ -121,7 +121,7 @@ function suggest(db){
         topix.count(topicQuery,function(err,count){
           if(err){
             errespond(res,500,err)
-          } else if(count < 0){
+          } else if(count > 0){
             topicResult = 'found'
             moveForward()
           } else {
@@ -133,7 +133,7 @@ function suggest(db){
         suggs.count(suggestion,function(err,count){
           if(err){
             errespond(res,500,err)
-          } else if(count < 0){
+          } else if(count > 0){
             suggestionResult = 'found'
             moveForward()
           } else {
