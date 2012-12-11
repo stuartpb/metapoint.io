@@ -2,7 +2,7 @@ function apicall(method,formdata,onok) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST','api/'+method,true)
   xhr.onload=function(e){
-    if (xhr.status='200' && onok) {
+    if (xhr.status=='200' && onok) {
       onok()
     }
   }

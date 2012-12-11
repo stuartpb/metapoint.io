@@ -46,7 +46,7 @@ html
         for (var i = 0; i < sugforms.length; ++i) {
           var sugform = sugforms[i];
           if (sugform.elements.namedItem('batchok').checked){
-            approve(new FormData(sugform),removeFromSuggestions(node))
+            approve(sugform)
           }
         }
       }
@@ -78,6 +78,6 @@ html
               br
               textarea(name="notes")= suggestion.notes
           .actions
-            button(type="button",onclick="approve(new FormData(this.form),removeFromSuggestions(node))") Approve
-            button(type="button",onclick="drop(new FormData(this.form),removeFromSuggestions(node))") Remove
+            button(type="button",onclick="approve(this.form)") Approve
+            button(type="button",onclick="drop(this.form)") Remove
     button#batchy(onclick="approveAll()") Approve All Checked Suggestions
