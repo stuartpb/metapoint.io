@@ -1,11 +1,12 @@
-/*global iScope db*/
+/*global db*/
 
 //run this script with `--eval "var iScope = /film$/"`
 //to integrate all films
 
 //Don't forget to specify the database on the command line!
 
-var integrateScope = iScope || null;
+var iScope = iScope || null;
+var integrateScope = iScope;
 
 var integrateHost = 'www.imdb.com';
 
