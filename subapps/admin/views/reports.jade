@@ -21,8 +21,7 @@ html
         top: 0;
         left: 0;
         right: 0;
-        padding: 4px;
-        height: 32px;
+        padding: 4px 8px;
         background: white;
         border-bottom: 4px solid black;
       }
@@ -36,32 +35,35 @@ html
         'mozColumnCount',
         'columnCount']
       function changeListColumns(numcols) {
-        var rule = document.getElementsById('liststyle').sheet.cssRules[0]
+        var rule = document.getElementById('liststyle').sheet.cssRules[0]
         for(var i = 1; i < columnCountNames.length; i++){
           if(rule[columnCountNames[i]] !== undefined) {
             rule[columnCountNames[i]] = numcols;
           }
         }
       }
-      var scrollInterval;
+      var scrollInterval = null;;
       var scrollMs = 10, scrollPx=1;
       function scrollByVar() {
         scrollBy(0,scrollPx);
       }
       function scrollPage(checked) {
-        if(checked === null) {
+        if(checked === null || checked === false) {
           clearInterval(scrollInterval);
+          scrollInterval = null;
         } else {
-        scrollInterval = setInterval(scrollByVar,scrollMs);
+          scrollInterval = setInterval(scrollByVar,scrollMs);
         }
       }
       function setScrollSize(value){
         scrollPx = +value;
       }
       function setScrollInterval(value){
-        clearInterval(scrollInterval);
+        if(scrollInterval){
+          clearInterval(scrollInterval);
+          scrollInterval = setInterval(scrollByVar,value);
+        }
         scrollMs=value;
-        scrollInterval = setInterval(scrollByVar,value);
       }
   body
     header
