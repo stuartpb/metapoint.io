@@ -66,10 +66,10 @@ if (count > 0) {
       db.suggestions.remove({_id: doc._id});
     }
     ++i;
-    if (Math.floor((count/i)*100) > lastPct) {
+    if (Math.floor((i/count)*100) > lastPct) {
       print( i + ' of ' + count + ' processed '+
-        '(' + Math.floor((count/i)*100) + '%)');
-      lastPct = Math.floor((count/i)*100);
+        '(' + Math.floor((i/count)*100) + '%)');
+      lastPct = Math.floor((i/count)*100);
     }
   });
 } else {
