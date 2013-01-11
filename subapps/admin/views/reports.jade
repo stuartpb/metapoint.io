@@ -13,6 +13,10 @@ html
       .scope {
         color: #00c;
       }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
       ul {
         margin-top: 48px;
       }
@@ -89,8 +93,7 @@ html
           oninput="setScrollSize(this.value)")
         =" px"
     ul: for item in reportItems
-      li <span class="name">#{item.topic}</span>
-        if item.scope
-          |  (<span class="scope">#{item.scope}</span>)
-        =" "
-        a(href="http://"+item.host+item.path) #
+      a(href="http://"+item.host+item.path)
+        li <span class="name">#{item.topic}</span>
+          if item.scope
+            |  (<span class="scope">#{item.scope}</span>)
