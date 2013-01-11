@@ -93,7 +93,8 @@ html
           oninput="setScrollSize(this.value)")
         =" px"
     ul: for item in reportItems
-      a(href="http://"+item.host+item.path)
-        li <span class="name">#{item.topic}</span>
+      li: a(href="http://"+item.host+item.path)
+        span.name= item.topic
           if item.scope
-            |  (<span class="scope">#{item.scope}</span>)
+            =" "
+            span.scope= item.scope
