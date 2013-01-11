@@ -35,7 +35,7 @@ html
         'mozColumnCount',
         'columnCount']
       function changeListColumns(numcols) {
-        var rule = document.getElementById('liststyle').sheet.cssRules[0]
+        var style = document.getElementById('liststyle').sheet.cssRules[0].style
         for(var i = 1; i < columnCountNames.length; i++){
           if(rule[columnCountNames[i]] !== undefined) {
             rule[columnCountNames[i]] = numcols;
@@ -52,6 +52,7 @@ html
           clearInterval(scrollInterval);
           scrollInterval = null;
         } else {
+          console.log(checked)
           scrollInterval = setInterval(scrollByVar,scrollMs);
         }
       }
@@ -70,22 +71,22 @@ html
       label
         ="Columns: "
         input(type="number",min="1",max="12",step="1",value="1"
-          oninput="changeListColumns(self.value)")
+          oninput="changeListColumns(this.value)")
       =" (chug alert!) "
       label
-        input(type="checkbox",onchange="scrollPage(self.checked)")
+        input(type="checkbox",onchange="scrollPage(this.checked)")
         =" Scroll page"
       =" "
       label
         ="every "
         input(type="number",min="1",max="7000",step="1",value="10"
-          oninput="setScrollInterval(self.value)")
+          oninput="setScrollInterval(this.value)")
         =" ms"
       =" "
       label
         ="by "
         input(type="number",min="1",max="500",step="1",value="1"
-          oninput="setScrollSize(self.value)")
+          oninput="setScrollSize(this.value)")
         =" px"
     ul: for item in reportItems
       li <span class="name">#{item.topic}</span>
