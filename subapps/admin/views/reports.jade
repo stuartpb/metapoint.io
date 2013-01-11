@@ -37,8 +37,8 @@ html
       function changeListColumns(numcols) {
         var style = document.getElementById('liststyle').sheet.cssRules[0].style
         for(var i = 1; i < columnCountNames.length; i++){
-          if(rule[columnCountNames[i]] !== undefined) {
-            rule[columnCountNames[i]] = numcols;
+          if(style[columnCountNames[i]] !== undefined) {
+            style[columnCountNames[i]] = numcols;
           }
         }
       }
