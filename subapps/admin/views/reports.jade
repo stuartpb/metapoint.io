@@ -13,7 +13,78 @@ html
       .scope {
         color: #00c;
       }
+      ul {
+        margin-top: 32px;
+      }
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 4px;
+        height: 32px;
+        background: white;
+        border-bottom: 4px solid black;
+      }
+    style#liststyle
+      ul {
+        /* empty - values are added/changed by script */
+      }
+    script
+      var columnCountNames = [
+        'webkitColumnCount',
+        'mozColumnCount',
+        'columnCount']
+      function changeListColumns(numcols) {
+        var rule = document.getElementsById('liststyle').sheet.cssRules[0]
+        for(var i = 1; i < columnCountNames.length; i++){
+          if(rule[columnCountNames[i]] !== undefined) {
+            rule[columnCountNames[i]] = numcols;
+          }
+        }
+      }
+      var scrollInterval;
+      var scrollMs = 10, scrollPx=1;
+      function scrollByVar() {
+        scrollBy(0,scrollPx);
+      }
+      function scrollPage(checked) {
+        if(checked === null) {
+          clearInterval(scrollInterval);
+        } else {
+        scrollInterval = setInterval(scrollByVar,scrollMs);
+        }
+      }
+      function setScrollSize(value){
+        scrollPx = +value;
+      }
+      function setScrollInterval(value){
+        clearInterval(scrollInterval);
+        scrollMs=value;
+        scrollInterval = setInterval(scrollByVar,value);
+      }
   body
+    header
+      label
+        ="Columns: "
+        input(type="number",min="1",max="12",step="1",value="1"
+          oninput="changeListColumns(self.value)")
+      =" (chug alert!) "
+      label
+        input(type="checkbox",onchange="scrollPage(self.checked)")
+        =" Scroll page"
+      =" "
+      label
+        ="every "
+        input(type="number",min="1",max="7000",step="1",value="10"
+          oninput="setScrollInterval(self.value)")
+        =" ms"
+      =" "
+      label
+        ="by "
+        input(type="number",min="1",max="500",step="1",value="1"
+          oninput="setScrollSize(self.value)")
+        =" px"
     ul: for item in reportItems
       li <span class="name">#{item.topic}</span>
         if item.scope
