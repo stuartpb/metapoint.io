@@ -14,8 +14,7 @@ html
         color: #00c;
       }
   body
-    ul
-    for item in reportItems
+    ul: for item in reportItems
       li <span class="name">#{item.topic}</span>
         if item.scope
           |  (<span class="scope">#{item.scope}</span>)
