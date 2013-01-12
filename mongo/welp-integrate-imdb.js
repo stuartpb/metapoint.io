@@ -14,12 +14,12 @@ function parseTemplateParams(captures){
   var position = 1;
   var results = {};
 
-  //Skip 0, since that's just the whole match
-  for(var i=1; i < captures.length; i++){
+  for(var i=0; i < captures.length; i++){
     var sep = captures[i].indexOf('=');
 
     if(sep >= 0){
-      results[captures[i].slice(0,sep).trim()] = captures[i].slice(sep+1).trim;
+      results[captures[i].slice(0,sep).trim()]
+        = captures[i].slice(sep+1).trim();
     } else {
       results[position] = captures[i].trim();
       ++position;
@@ -38,7 +38,7 @@ if (count > 0) {
   var i = 0, lastPct = 0;
   cursor.forEach(function(doc) {
     var params = parseTemplateParams(doc.notes.match(
-      /^Capture: \{\{[^|]*(?:\|([^\|]*))*\}\}$/m));
+      /^Capture: \{\{[^|]*\|?(.*)*\}\}$/m)[1].split('|'));
 
     var id = params['1'] || params.id;
     var title = params['2'] || params.title;
