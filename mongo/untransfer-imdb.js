@@ -3,7 +3,7 @@
 var skip = skip || 0;
 
 var cursor = db.oplog.find({action:'transfer',
-  'suggestion.host':'www.imdb.com'}).sort({_id:1});
+  'suggestion.host':'www.imdb.com'}).sort({_id:1}).skip(skip);
 
 var count = cursor.count();
 if (count > 0) {
