@@ -19,7 +19,7 @@ function parseTemplateParams(captures){
     var sep = captures[i].indexOf('=');
 
     if(sep >= 0){
-      results[captures[i].slice(0,sep).trim()] = captures[i].slice(sep+1).trim;
+      results[captures[i].slice(0,sep).trim()] = captures[i].slice(sep+1).trim();
     } else {
       results[position] = captures[i].trim();
       ++position;
