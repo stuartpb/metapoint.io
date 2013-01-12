@@ -7,7 +7,7 @@ var cursor = db.oplog.find({action:'transfer',
 
 var count = cursor.count();
 if (count > 0) {
-  var i = 0, lastPct = 0;
+  var i = skip, lastPct = 0;
   cursor.forEach(function(doc) {
     if(!db.oplog.findOne({unopid:doc._id})){
       db.oplog.insert({action:'untransfer',
