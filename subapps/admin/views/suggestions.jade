@@ -81,7 +81,7 @@ html
             // This should actually probably be a JS call so it visits
              | whatever host+path is currently written :/
             a(href='http://'+suggestion.host+suggestion.path) Visit
-          if (current)
+          if current
             ul.sitelinks
               ='Current: '
               for host, path in current.sites

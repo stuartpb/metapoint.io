@@ -28,6 +28,7 @@ function suggestions(db,adminpath){
         });
       }
       q.awaitAll(function(err,currents){
+        console.log(currents);
         //Ensure the suggestions are always recent
         res.setHeader('Cache-control','no-cache, must-revalidate');
 
