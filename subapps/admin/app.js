@@ -17,8 +17,12 @@ function suggestions(db,adminpath){
     suggs.find().sort({_id:-1}).limit(20).toArray(function(err,top20){
       var q = queue();
 
+      function suggsFindOne(doc,cb){
+        return suggs.findOne(doc,cb);
+      }
+
       for(var i = 0; i < top20.length; ++i) {
-        q.defer(suggs.findOne,{
+        q.defer(suggsFindOne, {
           topic: top20[i].topic,
           scope: top20[i].scope
         });
