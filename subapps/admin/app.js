@@ -5,43 +5,54 @@
 //authentication scheme, but it's OK for now.
 
 var express = require('express');
+var queue = require('queue-async');
 
 function suggestions(db,adminpath){
   //The topics collection might be useful at some point in the future
   //(list any conflict with existing topic), but not now.
 
-  var suggs = db.collection('suggestions')
+  var suggs = db.collection('suggestions');
 
   return function(req,res){
     suggs.find().sort({_id:-1}).limit(20).toArray(function(err,top20){
+      var q = queue();
 
-      //Ensure the suggestions are always recent
-      res.setHeader('Cache-control','no-cache, must-revalidate')
+      for(var i = 0; i < top20.length; ++i) {
+        q.defer(suggs.findOne,{
+          topic: top20[i].topic,
+          scope: top20[i].scope
+        });
+      }
+      q.awaitAll(function(err,currents){
+        //Ensure the suggestions are always recent
+        res.setHeader('Cache-control','no-cache, must-revalidate');
 
-      res.render('suggestions',{suggestions: top20, adminpath:adminpath})
-    })
-  }
+        res.render('suggestions',{suggestions: top20, currents: currents,
+          adminpath:adminpath});
+      });
+    });
+  };
 }
 
 function report(db, query, name){
-  var suggs = db.collection('suggestions')
+  var suggs = db.collection('suggestions');
 
   return function(req,res){
     suggs.find(query).sort([['topic',1],['scope',1]]).toArray(function(err,arr){
 
       //Ensure the suggestions are always recent
-      res.setHeader('Cache-control','no-cache, must-revalidate')
+      res.setHeader('Cache-control','no-cache, must-revalidate');
 
-      res.render('reports',{reportItems: arr, reportName: name})
-    })
-  }
+      res.render('reports',{reportItems: arr, reportName: name});
+    });
+  };
 }
 
 function collisions(db,adminpath){
   //The topics collection might be useful at some point in the future
   //(list any conflict with existing topic), but not now.
 
-  var suggs = db.collection('suggestions')
+  var suggs = db.collection('suggestions');
 
   return function(req,res){
     suggs.aggregate([
@@ -71,12 +82,12 @@ function collisions(db,adminpath){
       function(err,result) {
 
         //Ensure the suggestions are always recent
-        res.setHeader('Cache-control','no-cache, must-revalidate')
+        res.setHeader('Cache-control','no-cache, must-revalidate');
 
-        res.render('welp-collisions',{collisions: result, adminpath:adminpath})
+        res.render('welp-collisions',{collisions: result, adminpath:adminpath});
       }
-    )
-  }
+    );
+  };
 }
 
 //Removing/editing the existing topics database entries
@@ -91,18 +102,20 @@ module.exports = function(db,path){
   admin.set('view engine', 'jade');
   admin.locals.pretty = true;
 
-  admin.use(express.bodyParser())
+  admin.use(express.bodyParser());
 
   //FEATURE: return 405 codes for incorrect verbs
     //on valid API paths
 
-  admin.get('/suggestions',suggestions(db,path))
-  admin.get('/collisions',collisions(db,path))
-  admin.get('/reports/films',report(db,{scope: /film$/,host:'en.wikipedia.org'},"Films"))
-  admin.get('/reports/series',report(db,{scope: /TV series$/,host:'en.wikipedia.org'},"Seasons"))
-  admin.use('/api',require('./api.js')(db))
-  admin.use('/static',express.static(__dirname+'/static'))
+  admin.get('/suggestions',suggestions(db,path));
+  admin.get('/collisions',collisions(db,path));
+  admin.get('/reports/films',report(db,{scope: /film$/,
+    host:'en.wikipedia.org'},"Films"));
+  admin.get('/reports/series',report(db,{scope: /TV series$/,
+    host:'en.wikipedia.org'},"Series"));
+  admin.use('/api',require('./api.js')(db));
+  admin.use('/static',express.static(__dirname+'/static'));
 
 
-  return admin
-}
+  return admin;
+};

@@ -15,6 +15,7 @@
   "dependencies": {
     "express": "~3.0.0rc5",
     "mongodb": "~1.1.6",
-    "jade": "~0.27.6"
+    "jade": "~0.27.6",
+    "queue-async": "~1.0.0"
   }
 }

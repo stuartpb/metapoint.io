@@ -24,6 +24,13 @@ html
         right: 1em;
         top: 1em;
       }
+      li.sitelink {
+        display: inline;
+      }
+      li.this-host {
+        font-weight: bold;
+        color: red;
+      }
     script(src='static/xhrapi.js')
     script
       function removeFromSuggestions(node) {
@@ -56,6 +63,7 @@ html
       input(type="checkbox", id="refreshonex", checked)
     #sugforms
       for suggestion, i in suggestions
+        current = currents[i]
         form(id="suggestion-"+i).suggestion
           input(type="hidden",name="sid",value=suggestion._id)
           .idline
@@ -73,6 +81,13 @@ html
             // This should actually probably be a JS call so it visits
              | whatever host+path is currently written :/
             a(href='http://'+suggestion.host+suggestion.path) Visit
+          if (current)
+            ul.sitelinks
+              ='Current: '
+              for host, path in current.sites
+                host = host.replace(/_/g,'.')
+                li(class = host == suggestion.host ? 'sitelink this-host' : 'sitelink')
+                  a(href='http://'+host+path) host
           .notes
             label Notes
               br
