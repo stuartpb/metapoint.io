@@ -8,27 +8,25 @@ var express = require('express');
 var queue = require('queue-async');
 
 function suggestions(db,adminpath){
-  //The topics collection might be useful at some point in the future
-  //(list any conflict with existing topic), but not now.
 
   var suggs = db.collection('suggestions');
+  var topix = db.collection('topics');
 
   return function(req,res){
     suggs.find().sort({_id:-1}).limit(20).toArray(function(err,top20){
       var q = queue();
 
-      function suggsFindOne(doc,cb){
-        return suggs.findOne(doc,cb);
+      function topixFindOne(doc,cb){
+        return topix.findOne(doc,cb);
       }
 
       for(var i = 0; i < top20.length; ++i) {
-        q.defer(suggsFindOne, {
+        q.defer(topixFindOne, {
           topic: top20[i].topic,
           scope: top20[i].scope
         });
       }
       q.awaitAll(function(err,currents){
-        console.log(currents);
         //Ensure the suggestions are always recent
         res.setHeader('Cache-control','no-cache, must-revalidate');
 
