@@ -15,7 +15,8 @@ if (count > 0) {
       db.suggestions.insert(doc.suggestion);
       //I'd really be more boned if this weren't exactly how it went down -
       //if I'd clobbered existing data, who knows how I'd have gotten it back?
-      db.topics.update({topic:doc.suggestion.topic},
+      db.topics.update({topic:doc.suggestion.topic,
+        scope:doc.suggestion.scope},
         {$unset:{'sites.www_imdb_com':''}});
     }
     ++i;

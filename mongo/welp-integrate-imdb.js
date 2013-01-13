@@ -51,7 +51,7 @@ if (count > 0) {
       //If there's a description, it probably needs future scrutiny
       !description &&
       //If there's a title, only approve it if it's the same as the page title
-      (!title || title == doc.title)){
+      (!title || title == doc.topic)){
 
       var updata = {};
       updata['sites.'+doc.host.replace(/\./g,'_')] = doc.path;
