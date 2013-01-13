@@ -39,7 +39,7 @@ function pagelist(db){
 
         //return a 404
         //this could probably be coerced to be a bit more helpful
-        errespond(res,404,"Not Found")
+        errespond(res,404,"Not Found");
       } else {
         //FEATURE: Disambiguation (if count > 1)
           //NEEDS: Scope fields (and scope query support)
@@ -94,12 +94,12 @@ function suggest(db){
         var path = urlObj.path;
 
         //FEATURE: Strip/use URL prefixes from hosts?
-    
+
         //FEATURE: verify valid host/path
           //Ensure they don't contain invalid characters
           //Check if the host/page exists?
             //Don't want to be a proxy request spam vector
-        
+
         //Create preliminary suggestion object (searchable for collisions)
         var suggestion = {
           topic: topic,
@@ -107,17 +107,17 @@ function suggest(db){
           host: host,
           path: path,
         };
-        
+
         var topicResult, suggestionResult;
-        
+
         var topicQuery = {
           topic: topic,
           scope: scope,
-          sites:{}  
+          sites:{}
         };
-        
+
         topicQuery.sites[host.replace(/\./g,'_')] = path;
-        
+
         topix.count(topicQuery,function(err,count){
           if(err){
             errespond(res,500,err);
@@ -129,7 +129,7 @@ function suggest(db){
             moveForward();
           }
         });
-        
+
         suggs.count(suggestion,function(err,count){
           if(err){
             errespond(res,500,err);
@@ -141,7 +141,7 @@ function suggest(db){
             moveForward();
           }
         });
-        
+
         var moveForward = function() {
           if(topicResult && suggestionResult) {
             if(topicResult == 'found'){
@@ -153,10 +153,10 @@ function suggest(db){
               suggestion.notes = req.param('notes');
               //FEATURE: log identity in some way (key, session, IP address)
                 //Currently this is kind of what the "notes" thing is for
-         
+
               //Add suggestion object to suggestions database
               suggs.insert(suggestion);
-          
+
               //Return a success code
               res.send({result:"Suggestion added"});
             }

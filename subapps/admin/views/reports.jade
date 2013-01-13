@@ -20,6 +20,11 @@ html
       ul {
         margin-top: 48px;
       }
+      li {
+        /*hanging indent, since the hanging property isn't a thing*/
+        text-indent: -1em;
+        padding-left: 1em;
+      }
       header {
         position: fixed;
         top: 0;
@@ -47,7 +52,7 @@ html
         }
       }
       var scrollInterval = null;;
-      var scrollMs = 10, scrollPx=1;
+      var scrollMs = 75, scrollPx=1;
       function scrollByVar() {
         scrollBy(0,scrollPx);
       }
@@ -83,7 +88,7 @@ html
       =" "
       label
         ="every "
-        input(type="number",min="1",max="7000",step="1",value="10"
+        input(type="number",min="1",max="7500",step="75",value="75"
           oninput="setScrollInterval(this.value)")
         =" ms"
       =" "
