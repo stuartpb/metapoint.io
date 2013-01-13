@@ -24,10 +24,14 @@ html
         right: 1em;
         top: 1em;
       }
-      li.sitelink {
+      .sitelinks {
+        margin: 0;
+        padding: 0 0 2px;
+      }
+      .sitelink {
         display: inline;
       }
-      li.this-host {
+      .this-host {
         font-weight: bold;
         color: red;
       }
@@ -84,10 +88,10 @@ html
           if current
             ul.sitelinks
               ='Current: '
-              for host, path in current.sites
+              for path, host in current.sites
                 host = host.replace(/_/g,'.')
                 li(class = host == suggestion.host ? 'sitelink this-host' : 'sitelink')
-                  a(href='http://'+host+path) host
+                  a(href='http://'+host+path)= host
           .notes
             label Notes
               br
