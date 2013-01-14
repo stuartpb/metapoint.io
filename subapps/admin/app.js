@@ -13,25 +13,36 @@ function suggestions(db,adminpath){
   var topix = db.collection('topics');
 
   return function(req,res){
-    suggs.find().sort({_id:-1}).limit(20).toArray(function(err,top20){
+    var cursor, queryobj;
+    try {
+      queryobj = JSON.parse(req.query.query);
+    } catch (e) {
+      queryobj = null;
+    }
+    if(queryobj){
+      cursor = suggs.find(queryobj).sort({_id:-1}).limit(500);
+    } else {
+      cursor = suggs.find().sort({_id:-1}).limit(20);
+    }
+    cursor.toArray(function(err,sugglist){
       var q = queue();
 
       function topixFindOne(doc,cb){
         return topix.findOne(doc,cb);
       }
 
-      for(var i = 0; i < top20.length; ++i) {
+      for(var i = 0; i < sugglist.length; ++i) {
         q.defer(topixFindOne, {
-          topic: top20[i].topic,
-          scope: top20[i].scope
+          topic: sugglist[i].topic,
+          scope: sugglist[i].scope
         });
       }
       q.awaitAll(function(err,currents){
         //Ensure the suggestions are always recent
         res.setHeader('Cache-control','no-cache, must-revalidate');
 
-        res.render('suggestions',{suggestions: top20, currents: currents,
-          adminpath:adminpath});
+        res.render('suggestions',{suggestions: sugglist, currents: currents,
+          query: req.query.query, adminpath:adminpath});
       });
     });
   };

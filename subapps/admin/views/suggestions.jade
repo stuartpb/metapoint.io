@@ -7,17 +7,26 @@ html
       body {
         font-family: sans-serif;
       }
-      form {
+      .suggestion {
         margin: 4px auto;
         padding: 4px;
         width: 800px;
         border: 4px solid black;
       }
-      input[type="text"] {
+
+      .suggestion input[type="text"] {
         width: 300px;
       }
-      textarea {
+      .suggestion textarea {
         width: 90%;
+      }
+      .queryform {
+        margin: 4px auto;
+        padding: 4px;
+        width: 800px;
+      }
+      .queryform input[type="text"] {
+        width: 600px;
       }
       #refresh-label {
         position: absolute;
@@ -62,7 +71,11 @@ html
         }
       }
   body
-    h1 Suggestions
+    header
+      h1 Suggestions
+      form.queryform
+        input(type="text",name="query",value=query || "")
+        input(type="submit")
     label#refresh-label Refresh on exhaustion
       input(type="checkbox", id="refreshonex", checked)
     #sugforms
