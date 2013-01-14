@@ -60,7 +60,8 @@ function merge(db){
     topix.update({
       topic: reqtopic,
       scope: reqscope
-    },{$set: updata}, true)
+    },{$set: updata},
+      {upsert:true})
 
     res.send(200,'OK')
   }
