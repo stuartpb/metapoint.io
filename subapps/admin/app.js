@@ -118,6 +118,8 @@ module.exports = function(db,path){
     host:'en.wikipedia.org'},"Series"));
   admin.get('/reports/movies',report(db,{scope: /[Mm]ovie$/,
     host:'en.wikipedia.org'},"Movies"));
+  admin.get('/reports/scoped',report(db,{scope: {$ne:null},
+    host:'en.wikipedia.org'},"Scoped suggestions"));
   admin.use('/api',require('./api.js')(db));
   admin.use('/static',express.static(__dirname+'/static'));
 
