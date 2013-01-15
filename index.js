@@ -39,6 +39,8 @@ db_connector.open(function(err,db) {
 
   app.use(express.static(__dirname+'/static'));
 
+  app.use(site.notFound);
+
   if (config.http) {
     http.createServer(app).listen(config.http.port);
   }

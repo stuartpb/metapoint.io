@@ -1,24 +1,28 @@
 extends layout
 
+function encode(str){return encodeURIComponent(str).replace(/%20/g,'+')}
+
 block head
+  script(src="/listscript.js")
+  link(href="/liststyle.css", rel="stylesheet")
   style
     #listheader {
       top: 42px;
     }
-    input {
-      border-radius:0;
+    input[type="number"] {
+      border-radius: 0;
       padding: 0;
+      margin: 2px;
+      width: 4em;
     }
     label {
       display: inline;
       margin: 0;
     }
   style#liststyle
-    ul {
+    #itemlist {
       /* empty - values are added/changed by script */
     }
-  script(src="/listscript.js")
-  link(href="/liststyle.css", rel="stylesheet")
 
 block screenwide
   header#listheader
@@ -43,7 +47,7 @@ block screenwide
         oninput="setScrollSize(this.value)")
       =" px"
   ul#itemlist: for item in topics
-    li: a(href="/inspect/"+encodeURIComponent(item.topic)+(item.scope?'/'+encodeURIComponent(item.topic):'')).item
+    li: a(href="/inspect/"+encode(item.topic)+(item.scope?'/'+encode(item.scope):'')).item
       span.name= item.topic
         if item.scope
           =" "

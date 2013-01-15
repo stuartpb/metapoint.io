@@ -1,3 +1,11 @@
+function decode(str){
+  return decodeURIComponent(str).replace(/\+/g,' ');
+}
+
+function respondNotFound(req,res){
+  res.status(404).render('notfound');
+}
+
 module.exports = function(db){
   var routes = {};
   var topics = db.collection('topics');
@@ -19,11 +27,13 @@ module.exports = function(db){
   };
 
   routes.inspect = function(req,res){
-    var topic = req.params.topic;
-    var scope = req.params.scope || null;
+    var topic = req.params.topic ? decode(req.params.topic) : null;
+    var scope = req.params.scope ? decode(req.params.scope) : null;
     topics.findOne({topic:topic, scope:scope},function(err,doc){
       if(err){
         res.send(500,err);
+      } else if (!doc) {
+        respondNotFound(req,res);
       } else {
         var title = topic;
         if(scope) title += '('+scope+')';
@@ -41,6 +51,8 @@ module.exports = function(db){
       }
     });
   };
+
+  routes.notFound = respondNotFound;
 
   return routes;
 };
