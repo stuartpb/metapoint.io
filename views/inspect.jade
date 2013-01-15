@@ -15,7 +15,7 @@ block content
   hgroup
     h1.name= topic.topic
     if topic.scope
-      h2 (<span class="scope">#{topic.scope}</span>)
+      h2.scope (#{topic.scope})
   h3 Pages
   ul.pagelist
   for path, host in topic.sites
