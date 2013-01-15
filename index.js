@@ -22,6 +22,12 @@ db_connector.open(function(err,db) {
 
   var site = require('./site.js')(db);
 
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.locals.pretty = true;
+
+  app.use(express.bodyParser());
+
   app.get('/',site.index);
   app.get('/topiclist',site.topiclist);
   app.get('/inspect/:topic/:scope',site.inspect);
