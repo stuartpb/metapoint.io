@@ -41,4 +41,6 @@ module.exports = function(db){
       }
     });
   };
+
+  return routes;
 };
