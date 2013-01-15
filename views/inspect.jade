@@ -1,6 +1,6 @@
 extends layout
 
-black head
+block head
   style
     .name {
       color: #800;
@@ -19,7 +19,8 @@ block content
   h3 Pages
   ul.pagelist
   for path, host in topic.sites
+    url = 'http://'+host.replace(/_/g,'.')+path
     li
       img(src='/favicons/16/'+host+'.png')
       =' '
-      a(href=host.replace(/_/g,'.')+path) host.replace(/_/g,'.')+path
+      a(href=url)= url
