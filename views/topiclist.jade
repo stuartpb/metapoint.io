@@ -3,17 +3,22 @@ extends layout
 block head
   style
     #listheader {
-      position: sticky;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 42px;
+    }
+    input {
+      border-radius:0;
+      padding: 0;
+    }
+    label {
+      display: inline;
+      margin: 0;
+    }
   style#liststyle
     ul {
       /* empty - values are added/changed by script */
     }
   script(src="/listscript.js")
   link(href="/liststyle.css", rel="stylesheet")
-  script(src="/sticky.js")
 
 block screenwide
   header#listheader
