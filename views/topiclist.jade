@@ -23,7 +23,7 @@ block head
     }
 
 block screenwide
-  - function encode(str){return encodeURIComponent(str).replace(/%20/g,'+')}
+  encode = encodeURIComponent
   header#listheader
     label
       ="Columns: "

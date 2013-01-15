@@ -1,7 +1,3 @@
-function decode(str){
-  return decodeURIComponent(str.replace(/\+/g,'%20'));
-}
-
 function respondNotFound(req,res){
   res.status(404).render('notfound');
 }
@@ -27,8 +23,8 @@ module.exports = function(db){
   };
 
   routes.inspect = function(req,res){
-    var topic = req.params.topic ? decode(req.params.topic) : null;
-    var scope = req.params.scope ? decode(req.params.scope) : null;
+    var topic = req.params.topic || null;
+    var scope = req.params.scope || null;
     topics.findOne({topic:topic, scope:scope},function(err,doc){
       if(err){
         res.send(500,err);
