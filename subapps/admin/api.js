@@ -21,7 +21,7 @@ function merge(db){
 
   return function(req,res){
     var reqtopic = req.param('topic')
-    var reqscope = req.param('scope')
+    var reqscope = req.param('scope') || null
     var reqhost = req.param('host')
     var reqpath = req.param('path')
     var reqnotes = req.param('notes')
