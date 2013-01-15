@@ -37,7 +37,7 @@ module.exports = function(db){
       if(err){
         res.send(500,err);
       } else {
-        res.render('reports',{topics: arr, title: 'List', path: '/topiclist'});
+        res.render('topiclist',{topics: arr, title: 'List', path: '/topiclist'});
       }
     });
   };
