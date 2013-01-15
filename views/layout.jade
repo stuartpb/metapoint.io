@@ -1,4 +1,8 @@
 !!!
+
+title = title || null
+path = path || null
+
 mixin navitem(navpath,navname)
   if navpath == path
     li.active: a(href=navpath)= navname
@@ -8,6 +12,7 @@ mixin navitem(navpath,navname)
 html
   head
     meta(charset="utf-8")
+
     if title
       title= title + ' - metapoint.io'
     else
