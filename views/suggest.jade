@@ -1,0 +1,34 @@
+extends layout
+
+block content
+    form(action="/api/v0/suggest", method="post")
+      p
+        label
+          | Topic:
+          =' '
+          input(type="text",name="topic")
+        br
+        i (eg. "Charade")
+      p
+        label
+          | Scope:
+          =' '
+          input(type="text",name="scope")
+        br
+        i (eg. "1963 film")
+      p
+        label
+          | URL:
+          =' '
+          input(type="text",name="url")
+        br
+        i.
+          (eg. "<a href="http://en.wikipedia.org/wiki/Charade_(1963_film)">http://en.wikipedia.org/wiki/Charade_(1963_film)</a>"
+          <br>or "<a href="http://www.imdb.com/title/tt0056923/">http://www.imdb.com/title/tt0056923/</a>")
+      p
+        label
+          | Notes:
+          br
+          textarea(name="notes") From suggest page
+      p
+        input(type="submit")

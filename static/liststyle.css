@@ -1,0 +1,27 @@
+.name {
+  color: #800;
+}
+.scope {
+  color: #00c;
+}
+.item {
+  text-decoration: none;
+  color: inherit;
+}
+#itemlist {
+  margin-top: 48px;
+}
+#itemlist li {
+  /*hanging indent, since the hanging property isn't a thing*/
+  text-indent: -1em;
+  padding-left: 1em;
+}
+#listheader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 8px;
+  background: white;
+  border-bottom: 4px solid black;
+}

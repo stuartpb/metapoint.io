@@ -3,80 +3,18 @@ html
   head
     meta(charset="utf-8")
     title Report: #{reportName}
+    link(rel="stylesheet",href="/liststyle.css")
     style
       body {
         font-family: sans-serif;
-      }
-      .name {
-        color: #800;
-      }
-      .scope {
-        color: #00c;
-      }
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-      ul {
-        margin-top: 48px;
-      }
-      li {
-        /*hanging indent, since the hanging property isn't a thing*/
-        text-indent: -1em;
-        padding-left: 1em;
-      }
-      header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        padding: 4px 8px;
-        background: white;
-        border-bottom: 4px solid black;
       }
     style#liststyle
       ul {
         /* empty - values are added/changed by script */
       }
-    script
-      var columnCountNames = [
-        'webkitColumnCount',
-        'mozColumnCount',
-        'columnCount']
-      function changeListColumns(numcols) {
-        var style = document.getElementById('liststyle').sheet.cssRules[0].style
-        for(var i = 0; i < columnCountNames.length; i++){
-          if(style[columnCountNames[i]] !== undefined) {
-            style[columnCountNames[i]] = numcols;
-          }
-        }
-      }
-      var scrollInterval = null;;
-      var scrollMs = 75, scrollPx=1;
-      function scrollByVar() {
-        scrollBy(0,scrollPx);
-      }
-      function scrollPage(checked) {
-        if(checked === null || checked === false) {
-          clearInterval(scrollInterval);
-          scrollInterval = null;
-        } else {
-          console.log(checked)
-          scrollInterval = setInterval(scrollByVar,scrollMs);
-        }
-      }
-      function setScrollSize(value){
-        scrollPx = +value;
-      }
-      function setScrollInterval(value){
-        if(scrollInterval){
-          clearInterval(scrollInterval);
-          scrollInterval = setInterval(scrollByVar,value);
-        }
-        scrollMs=value;
-      }
+    script(src="/listscript.js")
   body
-    header
+    header#listheader
       label
         ="Columns: "
         input(type="number",min="1",max="12",step="1",value="1"
@@ -97,8 +35,8 @@ html
         input(type="number",min="1",max="500",step="1",value="1"
           oninput="setScrollSize(this.value)")
         =" px"
-    ul: for item in reportItems
-      li: a(href="http://"+item.host+item.path)
+    ul#itemlist: for item in reportItems
+      li: a(href="http://"+item.host+item.path).item
         span.name= item.topic
           if item.scope
             =" "

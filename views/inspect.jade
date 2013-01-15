@@ -1,0 +1,25 @@
+extends layout
+
+black head
+  style
+    .name {
+      color: #800;
+    }
+    .scope {
+      color: #00c;
+    }
+    .pagelist {
+      list-style: none;
+    }
+block content
+  hgroup
+    h1.name= topic.topic
+    if topic.scope
+      h2 (<span class="scope">#{scope}</span>)
+  h3 Pages
+  ul.pagelist
+  for path, host in topic.sites
+    li
+      img(src='/favicons/16/'+host+'.png')
+      =' '
+      a(href=host.replace(/_/g,'.')+path) host.replace(/_/g,'.')+path

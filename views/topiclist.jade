@@ -1,0 +1,44 @@
+extends layout
+
+block head
+  style
+    #listheader {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+  style#liststyle
+    ul {
+      /* empty - values are added/changed by script */
+    }
+  script(src="/listscript.js")
+  script(src="/sticky.js")
+
+block screenwide
+  header#listheader
+    label
+      ="Columns: "
+      input(type="number",min="1",max="12",step="1",value="1"
+        oninput="changeListColumns(this.value)")
+    =" (chug alert!) "
+    label
+      input(type="checkbox",onchange="scrollPage(this.checked)")
+      =" Scroll page"
+    =" "
+    label
+      ="every "
+      input(type="number",min="1",max="7500",step="75",value="75"
+        oninput="setScrollInterval(this.value)")
+      =" ms"
+    =" "
+    label
+      ="by "
+      input(type="number",min="1",max="500",step="1",value="1"
+        oninput="setScrollSize(this.value)")
+      =" px"
+  ul#itemlist: for item in topics
+    li: a(href="/inspect/"+encodeURIComponent(item.topic)+(item.scope?'/'+encodeURIComponent(item.topic):'')).item
+      span.name= item.topic
+        if item.scope
+          =" "
+          span.scope (#{item.scope})

@@ -1,0 +1,21 @@
+extends layout
+
+block head
+  style
+    .topiccount {
+      margin-bottom: 0;
+      font-size: 60px;
+      line-height: 1;
+      color: inherit;
+      letter-spacing: -1px;
+    }
+
+block content
+  .jumbotron
+    .nowserving Now tracking
+    .topiccount= topiccount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    .powerlevel topics
+    .whatninethousand (See <a href="/topiclist">the list</a>.)
+  p.
+    metapoint.io is an API-based open database of the paths to pages for
+    various topics on different sites.

@@ -20,6 +20,17 @@ db_connector.open(function(err,db) {
     app.use(config.admin,require('./subapps/admin/app.js')(db,config.admin));
   }
 
+  var site = require('./site.js')(db);
+
+  app.get('/',site.index);
+  app.get('/topiclist',site.topiclist);
+  app.get('/inspect/:topic/:scope',site.inspect);
+  app.get('/inspect/:topic',site.inspect);
+
+  app.get('/about',site.staticPage('about','About','/about'));
+  app.get('/documentation',site.staticPage('documentation','Documentation','/documentation'));
+  app.get('/suggest',site.staticPage('suggest','Suggest','/suggest'));
+
   app.use(express.static(__dirname+'/static'));
 
   if (config.http) {
