@@ -1,7 +1,5 @@
 extends layout
 
-- function encode(str){return encodeURIComponent(str).replace(/%20/g,'+')}
-
 block head
   script(src="/listscript.js")
   link(href="/liststyle.css", rel="stylesheet")
@@ -25,6 +23,7 @@ block head
     }
 
 block screenwide
+  - function encode(str){return encodeURIComponent(str).replace(/%20/g,'+')}
   header#listheader
     label
       ="Columns: "
