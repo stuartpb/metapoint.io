@@ -1,5 +1,5 @@
 function decode(str){
-  return decodeURIComponent(str).replace(/\+/g,' ');
+  return decodeURIComponent(str.replace(/\+/g,' '));
 }
 
 function respondNotFound(req,res){
