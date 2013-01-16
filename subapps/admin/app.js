@@ -126,9 +126,9 @@ module.exports = function(db,path){
   admin.get('/reports/films',report(db,{scope: /film$/,
     host:'en.wikipedia.org'},"Films"));
   admin.get('/reports/series',report(db,{scope: /TV series$/,
-    host:'en.wikipedia.org'},"Series"));
-  admin.get('/reports/episodes',report(db,{scope: /[Ee]pisode$/,
-    host:'en.wikipedia.org'},"Episodes"));
+    host:'en.wikipedia.org'},"TV Series"));
+  admin.get('/reports/years',report(db,{scope: /^\d+$/,
+    host:'en.wikipedia.org'},"Number scopes"));
   admin.get('/reports/scoped',report(db,{scope: {$ne:null},
     host:'en.wikipedia.org'},"Scoped suggestions"));
   admin.use('/api',require('./api.js')(db));
