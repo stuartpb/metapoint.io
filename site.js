@@ -16,7 +16,7 @@ module.exports = function(db){
     });
   };
 
-  routes.staticPage = function(name,path,title){
+  routes.staticPage = function(name,title,path){
     return function(req,res){
       res.render(name,{path: path, title: title});
     };
