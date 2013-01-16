@@ -17,8 +17,7 @@ block content
     if topic.scope
       h2.scope (#{topic.scope})
   h3 Pages
-  ul.pagelist
-  for path, host in topic.sites
+  ul.pagelist: for path, host in topic.sites
     url = 'http://'+host.replace(/_/g,'.')+path
     li
       img(src='/favicons/16/'+host+'.png')
