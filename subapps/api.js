@@ -31,9 +31,10 @@ function pagelist(db){
       } else if(count==0) {
         //FEATURE: case-insensitivity
           //NEEDS: lc_topic field on topic entries
-          //NEEDS: disambiguation object support
-            //Two topics differentiated by case (for instance, Gnu and GNU)
-            //would be made ambiguous in the case of the same name.
+          //WANTS: disambiguation object support
+            //BECAUSE: Two topics differentiated by case (for instance, Gnu and
+            //  GNU) would be made ambiguous in the case of the same name.
+            //HACK: In the meantime ambiguous queries can just return errors
           //HACK: try again with the first letter capitalized (Mediawiki style)
 
         //FEATURE: redirects / aliases
@@ -43,15 +44,14 @@ function pagelist(db){
         errespond(res,404,"Not Found");
       } else {
         //FEATURE: Disambiguation (if count > 1)
-          //NEEDS: Scope fields (and scope query support)
           //NEEDS: Descriptions
-          //I'm thinking entries for the most basic form of disambiguation,
-          //where one name refers to multiple things, get constructed here.
-          //Cases where one name *can* refer to things with *other* names
-          //get added in a "see also" field.
-          //More complex cases have a topic with the name and a scope of
-          //"disambiguation", with the non-same-named pages being in the
-          //aforementioned "see also" array.
+          //  I'm thinking entries for the most basic form of disambiguation,
+          //  where one name refers to multiple things, get constructed here.
+          //  Cases where one name *can* refer to things with *other* names
+          //  get added in a "see also" field.
+          //  More complex cases have a topic with the name and a scope of
+          //  "disambiguation", with the non-same-named pages being in the
+          //  aforementioned "see also" array.
           //EXAMPLE:
           //  {topic: "Charade", scope: "disambiguaton",
           //   seealso: [{topic: "Charades", scope: "game"}]}
