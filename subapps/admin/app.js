@@ -127,8 +127,8 @@ module.exports = function(db,path){
     host:'en.wikipedia.org'},"Films"));
   admin.get('/reports/series',report(db,{scope: /TV series$/,
     host:'en.wikipedia.org'},"Series"));
-  admin.get('/reports/movies',report(db,{scope: /[Mm]ovie$/,
-    host:'en.wikipedia.org'},"Movies"));
+  admin.get('/reports/episodes',report(db,{scope: /[Ee]pisode$/,
+    host:'en.wikipedia.org'},"Episodes"));
   admin.get('/reports/scoped',report(db,{scope: {$ne:null},
     host:'en.wikipedia.org'},"Scoped suggestions"));
   admin.use('/api',require('./api.js')(db));
