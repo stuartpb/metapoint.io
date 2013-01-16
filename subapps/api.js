@@ -1,5 +1,6 @@
 var express = require('express');
 var url = require('url');
+var queue = require('queue-async');
 
 //Take a response object and respond with the
 //given HTTP code and error message.
@@ -27,7 +28,7 @@ function pagelist(db){
     cursor.count(function(err,count){
       if(err){
         errespond(res,500,err);
-      } else if(count==0){
+      } else if(count==0) {
         //FEATURE: case-insensitivity
           //NEEDS: lc_topic field on topic entries
           //NEEDS: disambiguation object support
@@ -108,8 +109,6 @@ function suggest(db){
           path: path,
         };
 
-        var topicResult, suggestionResult;
-
         var topicQuery = {
           topic: topic,
           scope: scope,
@@ -118,35 +117,27 @@ function suggest(db){
 
         topicQuery.sites[host.replace(/\./g,'_')] = path;
 
-        topix.count(topicQuery,function(err,count){
-          if(err){
-            errespond(res,500,err);
-          } else if(count > 0){
-            topicResult = 'found';
-            moveForward();
-          } else {
-            topicResult = 'not found';
-            moveForward();
-          }
+        var rendezvous = queue();
+
+        rendezvous.defer(function(cb){
+          topix.count(topicQuery,function(err,count){
+            cb(err,count);
+          });
         });
 
-        suggs.count(suggestion,function(err,count){
-          if(err){
-            errespond(res,500,err);
-          } else if(count > 0){
-            suggestionResult = 'found';
-            moveForward();
-          } else {
-            suggestionResult = 'not found';
-            moveForward();
-          }
+        rendezvous.defer(function(cb){
+          suggs.count(suggestion,function(err,count){
+            cb(err,count);
+          });
         });
 
-        var moveForward = function() {
-          if(topicResult && suggestionResult) {
-            if(topicResult == 'found'){
+        rendezvous.await(function(err,topicCount,suggestionCount) {
+          if(err){
+            errespond(res,500,err);
+          } else {
+            if(topicCount > 0){
               res.send({result:'Host already resolves to path for given topic'});
-            } else if(suggestionResult == 'found') {
+            } else if(suggestionCount > 0) {
               res.send({result:'Suggestion already noted'});
             } else {
               //Add remaining suggestion parameters
@@ -161,7 +152,7 @@ function suggest(db){
               res.send({result:"Suggestion added"});
             }
           }
-        }; //otherwise we're still waiting for all the results, do nothing
+        });
       } else {
         errespond(res,400,"URL malformed");
       }
