@@ -25,7 +25,7 @@ if (count > 0) {
     db.topics.update({
       topic: doc.topic,
       scope: doc.scope
-    },{ $set: updata },true);
+    },{ $set: updata },{upsert:true});
     db.oplog.insert({
       action: 'transfer',
       suggestion: doc
