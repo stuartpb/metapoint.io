@@ -22,7 +22,7 @@ function suggestions(db,adminpath){
         notify = e.message;
       }
       if(queryobj){
-        cursor = suggs.find(queryobj).sort({_id:-1}).limit(500);
+        cursor = suggs.find(queryobj).sort({_id:-1}).limit(2000);
       } else {
         cursor = suggs.find().sort({_id:-1}).limit(20);
       }
