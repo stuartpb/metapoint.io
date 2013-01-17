@@ -14,12 +14,15 @@ function suggestions(db,adminpath){
 
   return function(req,res){
     suggs.count(function(err,count){
-      var cursor, queryobj, notify;
-      try {
-        queryobj = JSON.parse(req.query.query);
-      } catch (e) {
-        queryobj = null;
-        notify = e.message;
+      var cursor, queryobj, qjstring, notify;
+      qjstring = req.query.query;
+      if(qjstring){
+        try {
+          queryobj = JSON.parse(req.query.query);
+        } catch (e) {
+          queryobj = null;
+          notify = e.message;
+        }
       }
       if(queryobj){
         cursor = suggs.find(queryobj).sort({_id:-1}).limit(2000);
