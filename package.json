@@ -1,6 +1,6 @@
 {
   "name": "metapoint.io",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A thing for linking pages on the same topic",
   "main": "index.js",
   "scripts": {
