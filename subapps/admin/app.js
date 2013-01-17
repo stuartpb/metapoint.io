@@ -13,36 +13,40 @@ function suggestions(db,adminpath){
   var topix = db.collection('topics');
 
   return function(req,res){
-    var cursor, queryobj;
-    try {
-      queryobj = JSON.parse(req.query.query);
-    } catch (e) {
-      queryobj = null;
-    }
-    if(queryobj){
-      cursor = suggs.find(queryobj).sort({_id:-1}).limit(500);
-    } else {
-      cursor = suggs.find().sort({_id:-1}).limit(20);
-    }
-    cursor.toArray(function(err,sugglist){
-      var q = queue();
-
-      function topixFindOne(doc,cb){
-        return topix.findOne(doc,cb);
+    suggs.count(function(err,count){
+      var cursor, queryobj, notify;
+      try {
+        queryobj = JSON.parse(req.query.query);
+      } catch (e) {
+        queryobj = null;
+        notify = e.message;
       }
+      if(queryobj){
+        cursor = suggs.find(queryobj).sort({_id:-1}).limit(500);
+      } else {
+        cursor = suggs.find().sort({_id:-1}).limit(20);
+      }
+      cursor.toArray(function(err,sugglist){
+        var q = queue();
 
-      for(var i = 0; i < sugglist.length; ++i) {
-        q.defer(topixFindOne, {
-          topic: sugglist[i].topic,
-          scope: sugglist[i].scope
+        function topixFindOne(doc,cb){
+          return topix.findOne(doc,cb);
+        }
+
+        for(var i = 0; i < sugglist.length; ++i) {
+          q.defer(topixFindOne, {
+            topic: sugglist[i].topic,
+            scope: sugglist[i].scope
+          });
+        }
+        q.awaitAll(function(err,currents){
+          //Ensure the suggestions are always recent
+          res.setHeader('Cache-control','no-cache, must-revalidate');
+
+          res.render('suggestions',{suggestions: sugglist, currents: currents,
+            count: count, query: req.query.query, notify: notify,
+            adminpath:adminpath});
         });
-      }
-      q.awaitAll(function(err,currents){
-        //Ensure the suggestions are always recent
-        res.setHeader('Cache-control','no-cache, must-revalidate');
-
-        res.render('suggestions',{suggestions: sugglist, currents: currents,
-          query: req.query.query, adminpath:adminpath});
       });
     });
   };

@@ -29,9 +29,9 @@ html
         width: 600px;
       }
       #refresh-label {
-        position: absolute;
+        position: fixed;
         right: 1em;
-        top: 1em;
+        bottom: 1em;
       }
       .sitelinks {
         margin: 0;
@@ -44,12 +44,33 @@ html
         font-weight: bold;
         color: red;
       }
+      .this-host a {
+        text-align: center;
+        color: red;
+      }
+      #count-container {
+        text-align: right;
+        position: fixed;
+        right: 0;
+      }
+      #count-all {
+        font-size: 48pt;
+      }
+      #count-these {
+        font-size: 36pt;
+        color: navy;
+      }
     script(src='static/xhrapi.js')
     script
       function removeFromSuggestions(node) {
         return function() {
           var sugforms = document.getElementById("sugforms")
+          var allCount = document.getElementById('count-all')
+          var theseCount = document.getElementById('count-these')
+
           sugforms.removeChild(node)
+          allCount.textContent = allCount.textContent - 1
+          theseCount.textContent = theseCount.textContent - 1
           if(sugforms.children.length == 0 &&
             document.getElementById("refreshonex").checked){
             document.location.reload();
@@ -71,11 +92,16 @@ html
         }
       }
   body
+    #count-container
+      #count-all= count
+      #count-these= suggestions.length
     header
       h1 Suggestions
       form.queryform
         input(type="text",name="query",value=query || "")
         input(type="submit")
+      if notify
+        .notify= notify
     label#refresh-label Refresh on exhaustion
       input(type="checkbox", id="refreshonex", checked)
     #sugforms
