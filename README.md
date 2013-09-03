@@ -7,35 +7,11 @@ This readme notes what things are required to get the site running. It's not lik
 
 ## Environment
 
-Environment variables metapoint.io uses, and what happens without them. Note: all of these variables should be considered **secret** (except maybe PORT). Exposing their values could lead to all sorts of unfortunate access breaches. **Don't put them anywhere they'll be public-facing.**
-
-### PORT
-
-The HTTP port to bind to. If not set, will bind to 80.
-
-* Bare node process: This is probably what you want. You'll need to figure out how to let Node bind to port 80 on your own (sudo works, but that's hacky).
-* Heroku: PORT is always defined. I'm not sure how they handle apps that bind to something else.
-* Nodejitsu: PORT isn't defined by default, but Nodejitsu magically works with any apps connecting to 80 (I think) or any port above 1024, so the unspecified PORT default case works fine.
-
-### MONGODB_URL || MONGOLAB_URI || MONGOHQ_URL
-
-The MongoDB connection URL for the database. If not set, will connect to 'default' on localhost.
-
-* Bare node process: If you've set up mongod on 27017 just for metapoint, the default will be fine: otherwise, set it up differently and specify MONGODB_URL.
-* Heroku: Adding a database with either the MongoLab addon will set MONGOLAB_URI to the connection URL; likewise for MongoHQ and MONGOHQ_URL. If both are specified, metapoint will use MongoLab. You could also configure either of those manually and outside Heroku's system, then set the appropriate environment variable (I would recommend setting MONGODB_URL, so if you do ever set up one of the addons, your can remove your manual setting separately).
-* Nodejitsu: You can get the connection URL of any mongo database you create through `jitsu databases`: use `jitsu env set MONGODB_URL <the appropriate URL` after you've got the one you're going to use.
+metapoint.io uses the port, mongodb, and (eventually) facebook configuration variables from [envigor](https://github.com/stuartpb/envigor), as well as some app-specific variables:
 
 ### ADMINPATH
 
 The secret path prefix to the administration console pages for tinkering with the database (approving/rejecting suggestions).
-
-### FACEBOOK_APP_ID, FACEBOOK_SECRET
-
-The app ID and secret for Facebook's entry for this site (the Facebook developer can find it by going to the app's page from https://developers.facebook.com/apps ). Without them, Facebook authentication won't go.
-
-* Bare node process: Set the app up on Facebook, copy the values into whatever environment variable setup you're running.
-* Heroku: Heroku has this little thing you can do where you can create an app on Facebook that sets up a Heroku environment with these variables pre-defined, but I'd say it's only worth starting there if you're actually making a Facebook-centric app. Just set the two up separately then `heroku config:add` the values normally.
-* Nodejitsu: Set the app up on Facebook, then `jitsu env set` as you will.
 
 ## Database
 

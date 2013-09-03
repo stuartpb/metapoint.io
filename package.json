@@ -2,7 +2,7 @@
   "name": "metapoint.io",
   "version": "0.1.0",
   "description": "A thing for linking pages on the same topic",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +16,7 @@
     "express": "~3.0.0rc5",
     "mongodb": "~1.1.6",
     "jade": "~0.27.6",
-    "queue-async": "~1.0.0"
+    "queue-async": "~1.0.0",
+    "envigor": "~0.4.2"
   }
 }

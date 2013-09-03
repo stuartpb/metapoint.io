@@ -1,22 +1,15 @@
 var express = require('express');
 var mongodb = require('mongodb');
 
-var mongoUri = process.env.MONGODB_URL ||
-  process.env.MONGOLAB_URI ||
-  process.env.MONGOHQ_URL ||
-  'mongodb://localhost/default';
-
-var adminpath = process.env.ADMINPATH;
-
-mongodb.MongoClient.connect(mongoUri,function(err,db) {
+module.exports = function(cfg,db){
   var app = express();
 
   app.use('/api/v0',require('./subapps/api.js')(db));
-  if (adminpath) {
-    app.use(adminpath,require('./subapps/admin/app.js')(db,adminpath));
+  if (cfg.adminpath) {
+    app.use(cfg.adminpath,require('./subapps/admin/app.js')(db,cfg.adminpath));
   }
 
-  var site = require('./site.js')(db);
+  var site = require('./routes/site.js')(db);
 
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -37,8 +30,5 @@ mongodb.MongoClient.connect(mongoUri,function(err,db) {
 
   app.use(site.notFound);
 
-  var port = process.env.PORT || 5000;
-  app.listen(port, function() {
-    console.log("Listening on port " + port);
-  });
-}); //db.connector.open({
+  return app;
+};
