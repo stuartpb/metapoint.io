@@ -1,3 +1,5 @@
+var mongodb = require('mongodb');
+
 var cfg = require('./config.js')();
 var mongoUri = cfg.mongodb.url || 'mongodb://localhost/default';
 
