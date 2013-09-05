@@ -1,4 +1,4 @@
-var envigor = require("envigor")();
+var envigor = require("envigor");
 
 module.exports = function(cfg) {
   var cfg = cfg || envigor();
