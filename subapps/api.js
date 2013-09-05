@@ -15,7 +15,7 @@ function errespond(res, code, message) {
 function pagelist(db){
   var topix = db.collection('topics');
 
-  return function(req,res){
+  return function (req, res, next) {
     //allow pages on any domain to read this data,
     //even if it's an error or something
     res.setHeader("Access-Control-Allow-Origin",'*');
@@ -26,9 +26,9 @@ function pagelist(db){
       scope: req.param('scope')
     });
     cursor.count(function(err,count){
-      if(err){
-        errespond(res,500,err);
-      } else if(count==0) {
+      if(err) return next(err);
+
+      if (count == 0) {
         //FEATURE: case-insensitivity
           //NEEDS: lc_topic field on topic entries
           //WANTS: disambiguation object support
@@ -41,7 +41,7 @@ function pagelist(db){
 
         //return a 404
         //this could probably be coerced to be a bit more helpful
-        errespond(res,404,"Not Found");
+        errespond(res, 404, "Not Found");
       } else {
         //FEATURE: Disambiguation (if count > 1)
           //NEEDS: Descriptions
@@ -61,7 +61,9 @@ function pagelist(db){
           //  the songs, the Soulcalibur character).
 
         //return first document from cursor
-        cursor.nextObject(function (err,doc){
+        cursor.nextObject(function (err, doc) {
+          if(err) return next(err);
+
           //FEATURE: allow requests for a subset of the data
           //(ie. just the en.wikipedia.org page) via query string
           res.send(doc);
@@ -71,7 +73,7 @@ function pagelist(db){
   }; // /pagelist callback
 }// pagelist constructor
 
-function suggest(db){
+function suggest(db) {
   //The collection to add to.
   var suggs = db.collection('suggestions');
 
@@ -79,11 +81,11 @@ function suggest(db){
   //Need topic connection to do that
   var topix = db.collection('topics');
 
-  return function(req,res){
+  return function (req, res, next) {
     var topic = req.param('topic');
     var scope = req.param('scope');
-    if(scope===''){scope=null}
-    if(req.param('url')) {
+    if (scope === '') scope = null;
+    if (req.param('url')) {
       var urlObj = url.parse(req.param('url'));
 
       //CONSIDER: What to do with the scheme and slashes? It's not out of the
@@ -112,45 +114,47 @@ function suggest(db){
         var topicQuery = {
           topic: topic,
           scope: scope,
-          sites:{}
+          sites: {}
         };
 
+        // replace dots in the hostname with underscores because Mongo doesn't
+        // support keys with dots in them
         topicQuery.sites[host.replace(/\./g,'_')] = path;
 
         var rendezvous = queue();
 
-        rendezvous.defer(function(cb){
-          topix.count(topicQuery,function(err,count){
-            cb(err,count);
+        rendezvous.defer(function (cb) {
+          topix.count(topicQuery, function (err, count) {
+            cb(err, count);
           });
         });
 
-        rendezvous.defer(function(cb){
-          suggs.count(suggestion,function(err,count){
-            cb(err,count);
+        rendezvous.defer(function (cb) {
+          suggs.count(suggestion, function (err, count) {
+            cb(err, count);
           });
         });
 
-        rendezvous.await(function(err,topicCount,suggestionCount) {
-          if(err){
-            errespond(res,500,err);
+        rendezvous.await(function(err, topicCount, suggestionCount) {
+          if(err) return next(err);
+
+          if(topicCount > 0){
+            res.send({result:'Host already resolves to path for given topic'});
+          } else if(suggestionCount > 0) {
+            res.send({result:'Suggestion already noted'});
           } else {
-            if(topicCount > 0){
-              res.send({result:'Host already resolves to path for given topic'});
-            } else if(suggestionCount > 0) {
-              res.send({result:'Suggestion already noted'});
-            } else {
-              //Add remaining suggestion parameters
-              suggestion.notes = req.param('notes');
-              //FEATURE: log identity in some way (key, session, IP address)
-                //Currently this is kind of what the "notes" thing is for
+            //Add remaining suggestion parameters
+            suggestion.notes = req.param('notes');
+            //FEATURE: log identity in some way (key, session, IP address)
+              //Currently this is kind of what the "notes" thing is for
 
-              //Add suggestion object to suggestions database
-              suggs.insert(suggestion);
+            //Add suggestion object to suggestions database
+            suggs.insert(suggestion, function(err){
+              if(err) return next(err);
 
               //Return a success code
               res.send({result:"Suggestion added"});
-            }
+            });
           }
         });
       } else {

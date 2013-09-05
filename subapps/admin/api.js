@@ -1,6 +1,7 @@
 //Metapoint admin console API
 //Basically there for AJAX calls from the views
 var express = require('express');
+var queue = require('queue-async');
 var ObjectID = require('mongodb').ObjectID;
 
 //POST /merge
@@ -12,13 +13,17 @@ var ObjectID = require('mongodb').ObjectID;
 //every invocation of this operation is going to be tied
 //to a suggestion that should then be immediately deleted,
 //and why require two API calls?
-function merge(db){
+function merge (db) {
   //All actions taken in the admin cp should be logged.
   var oplog = db.collection('oplog');
   var topix = db.collection('topics');
   var suggs = db.collection('suggestions');
 
-  return function(req,res){
+  var suggsRemove = suggs.remove.bind(suggs);
+  var oplogInsert = oplog.insert.bind(oplog);
+  var topixUpdate = topix.update.bind(topix);
+
+  return function(req, res, next){
     var reqtopic = req.param('topic');
     var reqscope = req.param('scope') || null;
     var reqhost = req.param('host');
@@ -29,9 +34,11 @@ function merge(db){
     var updata = {};
     updata['sites.'+reqhost.replace(/\./g,'_')] = reqpath;
 
-    if(reqsid){
+    var q = queue();
+
+    if (reqsid) {
       var sidoid = new ObjectID(reqsid);
-      oplog.insert({
+      q.defer(oplogInsert,{
         action: 'upsert',
         suggestion: {
           topic: reqtopic,
@@ -42,9 +49,9 @@ function merge(db){
           _id: sidoid
         }
       });
-      suggs.remove({_id: sidoid});
+      q.defer(suggsRemove,{_id: sidoid});
     } else {
-      oplog.insert({
+      q.defer(oplogInsert,({
         action: 'write',
         suggestion: {
           topic: reqtopic,
@@ -53,41 +60,46 @@ function merge(db){
           path: reqpath,
           notes: reqnotes,
         }
-      });
+      }));
     }
 
-    topix.update({
+    q.defer(topixUpdate,{
       topic: reqtopic,
       scope: reqscope
     },{$set: updata},
       {upsert:true});
 
-    res.send(200,'OK');
-  };
+    q.await(function(err) {
+      if(err) return next(err);
+      res.send(200,'OK');
+    });
+  }; //return function (req, res, next)
 }
 
 //POST /drop
 //Just the "delete suggestion" part of the above API call.
-function drop(db){
+function drop (db) {
   //All actions taken in the admin cp should be logged.
   var oplog = db.collection('oplog');
   var suggs = db.collection('suggestions');
 
-  return function(req,res){
+  var suggsRemove = suggs.remove.bind(suggs);
+  var oplogInsert = oplog.insert.bind(oplog);
+
+  return function(req, res, next){
     var reqsid = req.param('sid');
-    if(reqsid) {
+    if (reqsid) {
       var sidoid = new ObjectID(reqsid);
-      suggs.findOne({_id: sidoid},function(err,doc){
-        if(err){
-          res.send(500,err);
-        } else {
-          oplog.insert({
-            action: 'forget',
-            suggestion: doc
-          });
-          suggs.remove({_id: sidoid});
+      suggs.findOne({_id: sidoid}, function (err, doc) {
+        if (err) return next(err);
+        oplog.insert({
+          action: 'forget',
+          suggestion: doc
+        });
+        suggs.remove({_id: sidoid}, function (err){
+          if (err) return next(err);
           res.send(200);
-        }
+        });
       });
     } else {
       var query = {};
@@ -103,28 +115,29 @@ function drop(db){
         var cursor = suggs.find(query);
         var found = false;
         cursor.each(function(err,doc) {
-          if(err){
-            res.send(500,err);
+          if(err) return next(err);
+          if(doc) { //null is returned after iterating through all docs
+            found = true;
+            queue()
+            .defer(oplogInsert,{
+              action: 'forget-by-value',
+              suggestion: doc
+            })
+            .defer(suggsRemove,{_id: doc._id})
+            .await(function (err) {
+              if (err) return next(err);
+            });
+          } else if(!found) { //if the first run of the each callback did nothing
+            res.send(400, "Requested value not found");
           } else {
-            if(doc) { //null is returned after iterating through all docs
-              found = true;
-              oplog.insert({
-                action: 'forget-by-value',
-                suggestion: doc
-              });
-              suggs.remove({_id: doc._id});
-            } else if(!found) { //if the first run of the each callback did nothing
-              res.send(400, "Requested value not found");
-            } else {
-              res.send(200);
-            }
+            res.send(200);
           }
         });
       } else {
         res.send(400, "Insufficient data to find suggestion");
       }
     }
-  }; //return function(req,res)
+  }; //return function (req, res, next)
 }
 
 //App constructor

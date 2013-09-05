@@ -7,16 +7,18 @@
 var express = require('express');
 var queue = require('queue-async');
 
-function suggestions(db,adminpath){
+function suggestions(db, adminpath) {
 
   var suggs = db.collection('suggestions');
   var topix = db.collection('topics');
 
-  return function(req,res){
-    suggs.count(function(err,count){
+  return function (req, res, next) {
+    suggs.count(function(err, count) {
+      if (err) return next(err);
+
       var cursor, queryobj, qjstring, notify;
       qjstring = req.query.query;
-      if(qjstring){
+      if (qjstring) {
         try {
           queryobj = JSON.parse(req.query.query);
         } catch (e) {
@@ -24,17 +26,16 @@ function suggestions(db,adminpath){
           notify = e.message;
         }
       }
-      if(queryobj){
+      if (queryobj) {
         cursor = suggs.find(queryobj).sort({_id:-1}).limit(2000);
       } else {
         cursor = suggs.find().sort({_id:-1}).limit(20);
       }
-      cursor.toArray(function(err,sugglist){
+      cursor.toArray(function (err, sugglist) {
+        if (err) return next(err);
         var q = queue();
 
-        function topixFindOne(doc,cb){
-          return topix.findOne(doc,cb);
-        }
+        var topixFindOne = topix.findOne.bind(topix);
 
         for(var i = 0; i < sugglist.length; ++i) {
           q.defer(topixFindOne, {
@@ -42,7 +43,8 @@ function suggestions(db,adminpath){
             scope: sugglist[i].scope
           });
         }
-        q.awaitAll(function(err,currents){
+        q.awaitAll(function (err, currents) {
+          if (err) return next(err);
           //Ensure the suggestions are always recent
           res.setHeader('Cache-control','no-cache, must-revalidate');
 
@@ -55,27 +57,30 @@ function suggestions(db,adminpath){
   };
 }
 
-function report(db, query, name){
+function report(db, query, name) {
   var suggs = db.collection('suggestions');
 
-  return function(req,res){
-    suggs.find(query).sort([['topic',1],['scope',1]]).toArray(function(err,arr){
+  return function(req, res, next){
+    suggs.find(query).sort([['topic',1],['scope',1]])
+      .toArray(function (err, arr) {
+
+       if (err) return next(err);
 
       //Ensure the suggestions are always recent
-      res.setHeader('Cache-control','no-cache, must-revalidate');
+      res.setHeader('Cache-control', 'no-cache, must-revalidate');
 
-      res.render('reports',{reportItems: arr, reportName: name});
+      res.render('reports', {reportItems: arr, reportName: name});
     });
   };
 }
 
-function collisions(db,adminpath){
+function collisions(db, adminpath) {
   //The topics collection might be useful at some point in the future
   //(list any conflict with existing topic), but not now.
 
   var suggs = db.collection('suggestions');
 
-  return function(req,res){
+  return function(req, res, next){
     suggs.aggregate([
       // Count instances of each path
       { $group: {
@@ -100,12 +105,14 @@ function collisions(db,adminpath){
         path: '$_id.path',
         _id: 0
       }}],
-      function(err,result) {
+      function(err, result) {
+        if (err) return next(err);
 
         //Ensure the suggestions are always recent
-        res.setHeader('Cache-control','no-cache, must-revalidate');
+        res.setHeader('Cache-control', 'no-cache, must-revalidate');
 
-        res.render('welp-collisions',{collisions: result, adminpath:adminpath});
+        res.render('welp-collisions',
+          {collisions: result, adminpath: adminpath});
       }
     );
   };
