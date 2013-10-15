@@ -1,6 +1,12 @@
 metapoint.io
 ============
 
+## This project is currently on hold
+
+Work on the metapoint.io project has been suspended in favor of working with http://wikidata.org
+
+## What this is
+
 This is the code powering http://metapoint.io
 
 This readme notes what things are required to get the site running. It's not like this is supposed to be done by a wide range of people with no prior experience, so it's not going to give a step-by-step procedure. I'm assuming that I'm the one reading it, because something is going on and I don't remember what I'm supposed to do.
